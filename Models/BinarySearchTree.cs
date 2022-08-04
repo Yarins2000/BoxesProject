@@ -62,9 +62,9 @@
         {
             if (root == null)
                 return default;
+
             if (root.Data.Equals(key))
                 return root.Value;
-
             else if (key.CompareTo(root.Data) <= 0)
                 return GetValue(key, root.Left);
             else

@@ -26,6 +26,7 @@ namespace BoxesProject
             tree.RemoveNode(4.5);
             tree.TraverseInOrder();
 
+            
         }
     }
 }
