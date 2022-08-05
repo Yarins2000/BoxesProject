@@ -2,7 +2,7 @@
 {
     public class BinarySearchTree<K, V> where K : IComparable<K>
     {
-        internal TreeNode<K, V>? Root { get; set; }
+        public TreeNode<K, V> Root { get; set; }
 
         public BinarySearchTree()
         {
@@ -33,7 +33,7 @@
             }
         }
 
-        private TreeNode<K, V> Get(K key)
+        internal TreeNode<K, V> Get(K key)
         {
             if (Root == null)
                 return null;
@@ -52,7 +52,7 @@
                 return Get(key, root.Right);
         }
 
-        private V GetValue(K key)
+        public V GetValue(K key)
         {
             if (Root == null)
                 return default;
@@ -183,10 +183,11 @@
             if (root != null)
             {
                 TraverseInOrder(root.Left);
-                Console.Write(root.Data + ", ");
+                Console.WriteLine($"{root.Data}");
                 TraverseInOrder(root.Right);
             }
         }
 
+        public bool IsExist(K data) => Get(data) is not null;
     }
 }

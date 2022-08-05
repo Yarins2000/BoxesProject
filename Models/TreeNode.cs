@@ -1,6 +1,6 @@
 ﻿namespace Models
 {
-    internal class TreeNode<K, V> where K : IComparable<K>
+    public class TreeNode<K, V> where K : IComparable<K>
     {
         public K? Data { get; set; }
         public V? Value { get; set; }

@@ -8,21 +8,32 @@ namespace Models
 {
     public class Box
     {
-        public int Count { get; set; }
+        public int Quantity { get; set; }
         public DateTime ReleaseDate { get; set; }
 
-        public Box(int count, DateTime releaseDate)
+        public double Length { get; set; }
+        public double Height { get; set; }
+
+        public Box(double length, double height, int quantity, DateTime releaseDate = default)
         {
-            Count = count;
-            ReleaseDate = releaseDate;
+            Length = length;
+            Height = height;
+            Quantity = quantity;
+            ReleaseDate = default ? DateTime.Now : releaseDate;
         }
 
-        public void AddBoxCount() => Count++;
+        public void AddBoxCount() => Quantity++;
 
         public void BuyABox()
         {
             ReleaseDate = DateTime.Now;
-            Count--;
+            Quantity--;
+        }
+
+        public override string ToString()
+        {
+            return $"Box's length and width: {Length}, height: {Height}, quantity in storage{Quantity}" +
+                $", released date: {ReleaseDate:d}";
         }
     }
 }
