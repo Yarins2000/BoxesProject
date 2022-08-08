@@ -33,7 +33,7 @@
             }
         }
 
-        internal TreeNode<K, V> Get(K key)
+        public TreeNode<K, V> Get(K key)
         {
             if (Root == null)
                 return null;
@@ -145,14 +145,18 @@
             }
         }
 
-        private TreeNode<K, V> GetMinimumNode(TreeNode<K, V> t)
+        public TreeNode<K, V> GetMinimumNode(TreeNode<K, V> t)
         {
             if (t.Left == null)
                 return t;
             return GetMinimumNode(t.Left);
         }
 
-        // Get the parent of the given value
+        /// <summary>
+        /// Get the parent of the given value
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         private TreeNode<K, V> GetPerent(K data)
         {
             if (Root != null)
@@ -178,7 +182,7 @@
         {
             TraverseInOrder(Root);
         }
-        private void TraverseInOrder(TreeNode<K, V>? root)
+        private void TraverseInOrder(TreeNode<K, V>? root) //use Action delegate
         {
             if (root != null)
             {

@@ -1,12 +1,14 @@
-﻿namespace Models
+﻿using System.Collections;
+
+namespace Models
 {
-    public class ListQueue<T>
+    public class ListQueue<T> : IEnumerable<QNode<T>>
     {
         private DoublyLinkedList<T> _list;
 
         public ListQueue()
         {
-            _list = new DoublyLinkedList<T>();
+            _list = new();
         }
 
         public void Enqueue(T value)
@@ -26,5 +28,8 @@
 
         public bool IsEmpty() => _list.IsEmpty();
 
+        public IEnumerator<QNode<T>> GetEnumerator() => _list.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

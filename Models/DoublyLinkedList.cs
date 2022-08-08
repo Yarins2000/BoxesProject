@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    internal class DoublyLinkedList<T> : IEnumerable<QNode<T>>
+    public class DoublyLinkedList<T> : IEnumerable<QNode<T>>
     {
         public QNode<T> Head { get; set; }
         public QNode<T> Tail { get; set; }

@@ -22,7 +22,7 @@ namespace Models
             ReleaseDate = default ? DateTime.Now : releaseDate;
         }
 
-        public void AddBoxCount() => Quantity++;
+        public void AddBoxCount(int q) => Quantity += q;
 
         public void BuyABox()
         {
@@ -32,7 +32,7 @@ namespace Models
 
         public override string ToString()
         {
-            return $"Box's length and width: {Length}, height: {Height}, quantity in storage{Quantity}" +
+            return $"Box's length and width: {Length}, height: {Height}, quantity in storage: {Quantity}" +
                 $", released date: {ReleaseDate:d}";
         }
     }

@@ -12,5 +12,10 @@
             Next = next;
             Previous = previous;
         }
+
+        public override string ToString()
+        {
+            return Data.ToString();
+        }
     }
 }
