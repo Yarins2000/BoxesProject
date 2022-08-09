@@ -44,11 +44,15 @@ namespace DAL
 
         public Box FindBox(double x, double y) => _storage.GetValue(x).GetValue(y);
 
-        //public DoublyLinkedList<Box> GetSuitableBoxes(double maxX, double maxY)
-        //{
-        //    DoublyLinkedList<Box> boxList = new();
+        //public DoublyLinkedList<Box> GetSuitableBoxes(double x, double maxX, double y, double maxY) => GetSuitableBoxes(x, maxX, y, maxY, root)
+        public DoublyLinkedList<Box> GetSuitableBoxes(double x, double maxX, double y, double maxY )
+        {
+            DoublyLinkedList<Box> boxList = new();
+            var currentNode = _storage;
             
-        //}
+            return default;
+        }
+        
 
 
         public string ChooseABoxForGift(double x, double y)

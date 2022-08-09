@@ -1,4 +1,6 @@
-﻿namespace Models
+﻿using System.Collections;
+
+namespace Models
 {
     public class BinarySearchTree<K, V> where K : IComparable<K>
     {
@@ -75,7 +77,7 @@
         {
             if (deleteNode.Left == null && deleteNode.Right == null)
             {
-                var parent = GetPerent(deleteNode.Data);
+                var parent = GetParent(deleteNode.Data);
                 if (parent.Right == deleteNode)
                     parent.Right = null;
                 else
@@ -84,7 +86,7 @@
         }
         private void RemoveNodeWithOneChild(TreeNode<K, V> deleteNode)
         {
-            var perent = GetPerent(deleteNode.Data);
+            var perent = GetParent(deleteNode.Data);
             if (perent != null)
             {
                 if (deleteNode.Left != null && deleteNode.Right == null)
@@ -110,9 +112,9 @@
             if (deleteNode.Left != null && deleteNode.Right != null)
             {
                 var minimum = GetMinimumNode(deleteNode.Right);
-                var parant = GetPerent(deleteNode.Data);
+                var parant = GetParent(deleteNode.Data);
 
-                var minParent = GetPerent(minimum.Data);  //find minimum's parent
+                var minParent = GetParent(minimum.Data);  //find minimum's parent
                 if (minParent != deleteNode)
                 {
                     minParent.Left = null;
@@ -157,13 +159,13 @@
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private TreeNode<K, V> GetPerent(K data)
+        private TreeNode<K, V> GetParent(K data)
         {
             if (Root != null)
-                return GetPerent(data, Root);
+                return GetParent(data, Root);
             return null;
         }
-        private TreeNode<K, V> GetPerent(K data, TreeNode<K, V> t)
+        private TreeNode<K, V> GetParent(K data, TreeNode<K, V> t)
         {
             if (t == null)
                 return null;
@@ -173,25 +175,42 @@
             else if (t.Right != null && t.Right.Data.Equals(data))
                 return t;
             else if (data.CompareTo(t.Data) < 0)
-                return GetPerent(data, t.Left);
+                return GetParent(data, t.Left);
             else
-                return GetPerent(data, t.Right);
+                return GetParent(data, t.Right);
         }
 
-        public void TraverseInOrder()
+        public void TraverseInOrder(Action<string> act)
         {
-            TraverseInOrder(Root);
+            TraverseInOrder(Root, act);
         }
-        private void TraverseInOrder(TreeNode<K, V>? root) //use Action delegate
+        private void TraverseInOrder(TreeNode<K, V> root, Action<string> act)
         {
             if (root != null)
             {
-                TraverseInOrder(root.Left);
-                Console.WriteLine($"{root.Data}");
-                TraverseInOrder(root.Right);
+                TraverseInOrder(root.Left, act);
+                act($"{root.Data}");
+                TraverseInOrder(root.Right, act);
             }
         }
 
         public bool IsExist(K data) => Get(data) is not null;
+
+        public void GetSuitableValues(K x, K maxX, K y, K maxY)
+        {
+            
+        }
+
+        public IEnumerable<TreeNode<K, V>> TraverseInOrderByEnumerator() => Enumerate(Root);
+        private IEnumerable<TreeNode<K, V>> Enumerate(TreeNode<K, V> root)
+        {
+            if (root == null)
+                yield break;
+            foreach (var v in Enumerate(root.Left))
+                yield return v;
+            yield return root;
+            foreach (var v in Enumerate(root.Right))
+                yield return v;
+        }
     }
 }

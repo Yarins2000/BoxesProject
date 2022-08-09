@@ -1,4 +1,5 @@
 ﻿using Models;
+using DAL;
 
 namespace BoxesProject
 {
@@ -20,12 +21,18 @@ namespace BoxesProject
             tree.AddNode(4.6, null);
             tree.AddNode(4.2, null);
             tree.AddNode(4.65, null);
-            tree.TraverseInOrder();
-            Console.WriteLine();
-            Console.WriteLine("====================");
+            //tree.TraverseInOrder(Console.WriteLine);
+            //Console.WriteLine();
+            //Console.WriteLine("====================");
             //tree.RemoveNode(4.5);
             //tree.TraverseInOrder();
 
+            foreach (var item in tree.TraverseInOrderByEnumerator())
+            {
+                Console.WriteLine(item.Data);
+            }
+            BoxManager b;
+            
         }
     }
     /*
