@@ -19,7 +19,7 @@ namespace Models
             Length = length;
             Height = height;
             Quantity = quantity;
-            ReleaseDate = default ? DateTime.Now : releaseDate;
+            ReleaseDate = default ? DateTime.Now : releaseDate;//======================check!!!
         }
 
         public void AddBoxCount(int q) => Quantity += q;

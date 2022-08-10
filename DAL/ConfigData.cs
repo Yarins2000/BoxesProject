@@ -8,6 +8,8 @@ namespace DAL
     {
         public int MaxQuantity { get; set; }
         public int MinQuantityToAlert { get; set; }
+
+        public double PercentageRange { get; set; }
     }
 
     public class Configuration

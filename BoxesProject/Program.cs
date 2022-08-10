@@ -38,13 +38,8 @@ namespace BoxesProject
             var tree = DBMock.Instance.Tree;
             tree.TraverseInOrder(Console.WriteLine);
             Console.WriteLine();
-
-            var xtree = tree.GetSuitableNodesByRange(4, 7);
-            var l = xtree.ToList();
-            foreach (var item in xtree)
-            {
-                Console.WriteLine(item.Data);
-            }
+            BoxManager bm = new();
+            //bm.ChooseBoxesForGift(4, 6, 10);
         }
     }
     /*

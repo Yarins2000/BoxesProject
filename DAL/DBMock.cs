@@ -24,8 +24,22 @@ namespace DAL
 
         private void Initialize()
         {
+            /*5, 
+            6, 
+            4, 
+            8, 
+            10,
+            3, 
+            4.5
+            4.3
+            4.7
+            4.8
+            4.6
+            4.2*/
             Box[] boxes = new Box[20];
             Box b1 = new(4, 5, 2);
+            Box b1_1 = new(4, 4, 5);
+            Box b1_2 = new(4, 6, 5);
             Box b2 = new(6.5, 2.5, 6);
             Box b3 = new(8, 9, 5);
             Box b4 = new(5.3, 4.8, 10);
@@ -36,8 +50,12 @@ namespace DAL
             Box b9 = new(8, 7, 6);
             Box b10 = new(5.5, 5.5, 10);
             Box b11 = new(5.3, 5, 2);
+            Box b11_1 = new(5.3, 7, 5);
+            Box b12 = new(4.2, 6, 10);
+            Box b12_1 = new(4.2, 5, 5);
+            Box b12_2 = new(4.2, 8, 3);
 
-            AddNewBoxes(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11);
+            AddNewBoxes(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b11_1, b12, b1_1, b1_2, b12_1, b12_2);
         }
         public void AddNewBox(Box b)
         {

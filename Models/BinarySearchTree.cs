@@ -4,8 +4,6 @@ namespace Models
 {
     public class BinarySearchTree<K, V> where K : IComparable<K>
     {
-        private readonly object root;
-
         public TreeNode<K, V> Root { get; set; }
 
         public BinarySearchTree()
@@ -197,6 +195,7 @@ namespace Models
         }
 
         public bool IsExist(K data) => Get(data) is not null;
+        public bool IsEmpty() => this.Root is null;
 
         public IEnumerable<TreeNode<K, V>> GetSuitableNodesByRange(K minData, K maxData) => GetSuitableNodesByRange(minData, maxData, Root);
         private IEnumerable<TreeNode<K, V>> GetSuitableNodesByRange(K minData, K maxData, TreeNode<K, V> root)
