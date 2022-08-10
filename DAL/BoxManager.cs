@@ -6,17 +6,19 @@ namespace DAL
     public class BoxManager
     {
         BinarySearchTree<double, BinarySearchTree<double, Box>> _storage;
-        public BinarySearchTree<double, BinarySearchTree<double, Box>> Storage { get => _storage; }
 
         private const double PERCENTAGE_RANGE = 20;
+        private readonly int _maxQuantity = Configuration.Data.MaxQuantity;
 
         public BoxManager()
         {
-            _storage = new();
+            _storage = DBMock.Instance.Tree;
         }
 
         public void AddNewBox(Box b)
         {
+            if (b is null || b.Quantity < 0) return;
+
             if (_storage.IsExist(b.Length))
             {
                 var innerTree = _storage.GetValue(b.Length);
@@ -24,6 +26,7 @@ namespace DAL
                 {
                     var currentBox = innerTree.GetValue(b.Height);
                     currentBox.AddBoxCount(b.Quantity);
+                    currentBox.Quantity = currentBox.Quantity > _maxQuantity ? _maxQuantity : currentBox.Quantity;
                 }
                 else
                     innerTree.AddNode(b.Height, b);
@@ -35,6 +38,13 @@ namespace DAL
                 _storage.AddNode(b.Length, newInnerTree);
             }
         }
+        public void AddNewBoxes(params Box[] boxes)
+        {
+            foreach (var b in boxes)
+            {
+                AddNewBox(b);
+            }
+        }
 
         public void RemoveBox(Box b)
         {
@@ -44,16 +54,14 @@ namespace DAL
 
         public Box FindBox(double x, double y) => _storage.GetValue(x).GetValue(y);
 
-        //public DoublyLinkedList<Box> GetSuitableBoxes(double x, double maxX, double y, double maxY) => GetSuitableBoxes(x, maxX, y, maxY, root)
-        public DoublyLinkedList<Box> GetSuitableBoxes(double x, double maxX, double y, double maxY )
-        {
-            DoublyLinkedList<Box> boxList = new();
-            var currentNode = _storage;
-            
-            return default;
-        }
-        
+        //public DoublyLinkedList<Box> GetSuitableBoxes(double x, double maxX, double y, double maxY)
+        //    => GetSuitableBoxes(x, maxX, y, maxY, root)
+        //public DoublyLinkedList<Box> GetSuitableBoxes(double x, double maxX, double y, double maxY)
+        //{
+        //    var xTree = _storage.GetSuitableNodesByRange(x, maxX);
+        //    var yTree = _storage.GetSuitableNodesByRange(y, maxY);
 
+        //}
 
         public string ChooseABoxForGift(double x, double y)
         {
@@ -67,7 +75,7 @@ namespace DAL
             {
                 if (_storage.IsExist(x))
                 {
-                    var innerTree = _storage.GetValue(x); //the inner tree of the correspond x
+                    var innerTree = _storage.GetValue(x); //the inner tree of the corresponded x
                     double maxSuitableSize = y + (y * PERCENTAGE_RANGE) / 100; //the max height that could be offered
                     var SmallestSuitableBox = innerTree.Root.Right is not null ?
                         innerTree.GetMinimumNode(innerTree.Root.Right).Value : null;

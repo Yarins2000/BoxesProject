@@ -4,6 +4,8 @@ namespace Models
 {
     public class BinarySearchTree<K, V> where K : IComparable<K>
     {
+        private readonly object root;
+
         public TreeNode<K, V> Root { get; set; }
 
         public BinarySearchTree()
@@ -124,9 +126,9 @@ namespace Models
                     }
                 }
                 minimum.Left = deleteNode.Left;    // minimum takes the RIGHT and the LEFT of the deleteNode
-                if(deleteNode.Right != minimum)
+                if (deleteNode.Right != minimum)
                     minimum.Right = deleteNode.Right;
-                
+
 
                 if (parant.Right == deleteNode)   // connecting the node's parent with the minimum
                     parant.Right = minimum;
@@ -138,7 +140,7 @@ namespace Models
         public void RemoveNode(K data)
         {
             var deleteNode = Get(data);
-            if(deleteNode != null && deleteNode != Root)
+            if (deleteNode != null && deleteNode != Root)
             {
                 RemoveNodeWithoutChildren(deleteNode);
                 RemoveNodeWithOneChild(deleteNode);
@@ -196,9 +198,19 @@ namespace Models
 
         public bool IsExist(K data) => Get(data) is not null;
 
-        public void GetSuitableValues(K x, K maxX, K y, K maxY)
+        public IEnumerable<TreeNode<K, V>> GetSuitableNodesByRange(K minData, K maxData) => GetSuitableNodesByRange(minData, maxData, Root);
+        private IEnumerable<TreeNode<K, V>> GetSuitableNodesByRange(K minData, K maxData, TreeNode<K, V> root)
         {
-            
+            if (root is null)
+                yield break;
+            if (minData.CompareTo(root.Data) < 0)
+                foreach (TreeNode<K, V> node in GetSuitableNodesByRange(minData, maxData, root.Left))
+                    yield return node;
+            if (minData.CompareTo(root.Data) <= 0 && maxData.CompareTo(root.Data) >= 0)
+                yield return root;
+            if (maxData.CompareTo(root.Data) > 0)
+                foreach (TreeNode<K, V> node in GetSuitableNodesByRange(minData, maxData, root.Right))
+                    yield return node;
         }
 
         public IEnumerable<TreeNode<K, V>> TraverseInOrderByEnumerator() => Enumerate(Root);
