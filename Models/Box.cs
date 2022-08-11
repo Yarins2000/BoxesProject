@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Models
+﻿namespace Models
 {
     public class Box
     {
@@ -20,7 +14,7 @@ namespace Models
         public int AmountToGive { get; set; } = 0;
 
         /// <summary>
-        /// Represents the reference for the DateTime Queue
+        /// Represents the reference for the DateTime Queue.
         /// </summary>
         public QNode<DateTime> DateReference { get; set; }
 

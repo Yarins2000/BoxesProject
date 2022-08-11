@@ -42,7 +42,7 @@ namespace BoxesProject
             BoxManager bm = new();
             var list = bm.SuitableBoxListByAmount(8, 7, 22, out bool flag);
             bm.UpdateTreeAfterPurchase(list);
-
+            
             BoxManagerUI bmUI = new();
             bmUI.Start();
 

@@ -8,6 +8,12 @@
         {
             Root = null;
         }
+
+        /// <summary>
+        /// Add new node to the tree
+        /// </summary>
+        /// <param name="data">the node's data</param>
+        /// <param name="value">the node's value</param>
         public void AddNode(K data, V value)
         {
             if (Root == null)
@@ -33,42 +39,50 @@
             }
         }
 
-        public TreeNode<K, V> Get(K key)
+        /// <summary>
+        /// Gets the correspond node by the given data.
+        /// </summary>
+        /// <param name="data">the searched node's data</param>
+        public TreeNode<K, V> Get(K data)
         {
             if (Root == null)
                 return null;
-            return Get(key, Root);
+            return Get(data, Root);
         }
-        private TreeNode<K, V> Get(K key, TreeNode<K, V> root)
+        private TreeNode<K, V> Get(K data, TreeNode<K, V> root)
         {
             if (root == null)
                 return null;
-            if (root.Data.Equals(key))
+            if (root.Data.Equals(data))
                 return root;
 
-            else if (key.CompareTo(root.Data) <= 0)
-                return Get(key, root.Left);
+            else if (data.CompareTo(root.Data) <= 0)
+                return Get(data, root.Left);
             else
-                return Get(key, root.Right);
+                return Get(data, root.Right);
         }
 
-        public V GetValue(K key)
+        /// <summary>
+        /// Gets the correspond node's value according to the given data.
+        /// </summary>
+        /// <param name="data">The searched node's value data</param>
+        public V GetValue(K data)
         {
             if (Root == null)
                 return default;
-            return GetValue(key, Root);
+            return GetValue(data, Root);
         }
-        private V GetValue(K key, TreeNode<K, V> root)
+        private V GetValue(K data, TreeNode<K, V> root)
         {
             if (root == null)
                 return default;
 
-            if (root.Data.Equals(key))
+            if (root.Data.Equals(data))
                 return root.Value;
-            else if (key.CompareTo(root.Data) <= 0)
-                return GetValue(key, root.Left);
+            else if (data.CompareTo(root.Data) <= 0)
+                return GetValue(data, root.Left);
             else
-                return GetValue(key, root.Right);
+                return GetValue(data, root.Right);
         }
 
         private void RemoveNodeWithoutChildren(TreeNode<K, V> deleteNode)
@@ -171,6 +185,10 @@
             }
         }
 
+        /// <summary>
+        /// Removes the node according to the given data.
+        /// </summary>
+        /// <param name="data">the removed node's data</param>
         public void RemoveNode(K data)
         {
             var deleteNode = Get(data);
@@ -182,13 +200,21 @@
             }
         }
 
-        public TreeNode<K, V> GetMinimumNode(TreeNode<K, V> t)
+        /// <summary>
+        /// Gets the minimum node.
+        /// </summary>
+        /// <param name="t">the node that is given in order to find its minimum node(that is greater than it)</param>
+        private TreeNode<K, V> GetMinimumNode(TreeNode<K, V> t)
         {
             if (t.Left == null)
                 return t;
             return GetMinimumNode(t.Left);
         }
-        public TreeNode<K, V> GetMaximumNode(TreeNode<K, V> t)
+        /// <summary>
+        /// Gets the maximum node.
+        /// </summary>
+        /// <param name="t">the node that is given in order to find its maximum node(that is smaller than it)</param>
+        private TreeNode<K, V> GetMaximumNode(TreeNode<K, V> t)
         {
             if (t.Right == null)
                 return t;
@@ -196,10 +222,9 @@
         }
 
         /// <summary>
-        /// Get the parent of the given value
+        /// Gets the parent of the given node
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
+        /// <param name="data">the data of the child's node</param>
         private TreeNode<K, V> GetParent(K data)
         {
             if (Root != null)
@@ -221,6 +246,10 @@
                 return GetParent(data, t.Right);
         }
 
+        /// <summary>
+        /// Traverse through the tree by InOrder.
+        /// </summary>
+        /// <param name="act">the action that would occur on the current node in the process</param>
         public void TraverseInOrder(Action<string> act)
         {
             TraverseInOrder(Root, act);
@@ -235,9 +264,23 @@
             }
         }
 
+        /// <summary>
+        /// If the node exists return true, otherwise false.
+        /// </summary>
+        /// <param name="data">the data of the examinated node</param>
         public bool IsExist(K data) => Get(data) is not null;
+
+        /// <summary>
+        /// True if the tree is empty(its root is null), otherwise false.
+        /// </summary>
         public bool IsEmpty() => this.Root is null;
 
+        /// <summary>
+        /// Gets the suitable nodes by a K-size(data) range.
+        /// </summary>
+        /// <param name="minData">the minimum required data of the nodes</param>
+        /// <param name="maxData">the maximum required data of the nodes</param>
+        /// <returns>An enumerable that would be iterated and returns the suitable nodes.</returns>
         public IEnumerable<TreeNode<K, V>> GetSuitableNodesByRange(K minData, K maxData) => GetSuitableNodesByRange(minData, maxData, Root);
         private IEnumerable<TreeNode<K, V>> GetSuitableNodesByRange(K minData, K maxData, TreeNode<K, V> root)
         {
@@ -253,6 +296,7 @@
                     yield return node;
         }
 
+        //maybe delete it
         public IEnumerable<TreeNode<K, V>> TraverseInOrderByEnumerator() => Enumerate(Root);
         private IEnumerable<TreeNode<K, V>> Enumerate(TreeNode<K, V> root)
         {

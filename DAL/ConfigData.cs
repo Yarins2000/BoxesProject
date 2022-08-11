@@ -2,7 +2,7 @@
 namespace DAL
 {
     /// <summary>
-    /// A class that represents the configuration's data from the json file
+    /// A class that represents the configuration's data from the json file.
     /// </summary>
     public class ConfigData
     {

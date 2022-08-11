@@ -5,7 +5,13 @@ namespace DAL
 {
     public class BoxManager
     {
+        /// <summary>
+        /// The tree from the DB.
+        /// </summary>
         BinarySearchTree<double, BinarySearchTree<double, Box>> _storage;
+        /// <summary>
+        /// The dates queue from the DB.
+        /// </summary>
         ListQueue<QNode<DateTime>> _boxesDates;
 
         private readonly double _percentageRange = Configuration.Data.PercentageRange;
@@ -17,6 +23,10 @@ namespace DAL
             _boxesDates = DBMock.Instance.BoxesDates;
         }
 
+        /// <summary>
+        /// Adds a new box to the tree.
+        /// </summary>
+        /// <param name="b">The new added box</param>
         public void AddNewBox(Box b)
         {
             if (b is null || b.Quantity < 0) return;
@@ -50,6 +60,10 @@ namespace DAL
                 AddNewBox(b);
         }
 
+        /// <summary>
+        /// Removes a node according to the given box.
+        /// </summary>
+        /// <param name="b">the box that is in the removed node</param>
         public void RemoveBox(Box b)
         {
             var innerTree = _storage.GetValue(b.Length);
@@ -58,16 +72,22 @@ namespace DAL
                 _storage.RemoveNode(b.Length);
         }
 
-        public Box FindBox(double x, double y) => _storage.GetValue(x).GetValue(y);
+        /// <summary>
+        /// Finds a box in the tree according to the given size values.
+        /// </summary>
+        /// <param name="length">the box's length</param>
+        /// <param name="height">the box's height</param>
+        /// <returns>The box with the given values.</returns>
+        public Box FindBox(double length, double height) => _storage.GetValue(length).GetValue(height);
 
         /// <summary>
-        /// Get a doubly linked list with the suitable boxes(according to the given values)
+        /// Gets a list with the suitable boxes(according to the given values).
         /// </summary>
-        /// <param name="length"></param>
-        /// <param name="maxLength"></param>
-        /// <param name="height"></param>
-        /// <param name="maxHeight"></param>
-        /// <returns></returns>
+        /// <param name="length">the boxes minimum length(the best result)</param>
+        /// <param name="maxLength">the boxes maximum length(according to a specific percentage range)</param>
+        /// <param name="height">the boxes minimum height(the best result)</param>
+        /// <param name="maxHeight">the boxes maximum height(according to a specific percentage range)</param>
+        /// <returns>List with the suitable boxes from the storage.</returns>
         public DoublyLinkedList<Box> GetSuitableBoxes(double length, double maxLength, double height, double maxHeight)
         {
             var suitableList = new DoublyLinkedList<Box>();
@@ -85,21 +105,24 @@ namespace DAL
             return suitableList;
         }
 
-        public void MaximumBoxSize(double x, double y, out double maxLength, out double maxHeight)
+        /// <summary>
+        /// Calculates the maximum top range of the given length and height. 
+        /// </summary>
+        public void MaximumBoxSize(double length, double height, out double maxLength, out double maxHeight)
         {
-            maxLength = x + x * _percentageRange / 100;
-            maxHeight = y + y * _percentageRange / 100;
+            maxLength = length + length * _percentageRange / 100;
+            maxHeight = height + height * _percentageRange / 100;
         }
 
         /// <summary>
-        /// Recieves the suitable list of boxes(according to the demands) 
+        /// Recieves the suitable list of boxes(from the <see cref="GetSuitableBoxes(double, double, double, double"/> function) and takes the 'amount' best of them.
         /// </summary>
-        /// <param name="length"></param>
-        /// <param name="height"></param>
-        /// <param name="desiredBoxAmount"></param>
-        /// <param name="AreThereEnoughBoxes">represents wether there are enough boxes for the gift</param>
-        /// <returns>A list of boxes according to the demanded amount of boxes for the gift</returns>
-        public DoublyLinkedList<Box> SuitableBoxListByAmount(double length, double height, int desiredBoxAmount, out bool AreThereEnoughBoxes)
+        /// <param name="length">the required gift length</param>
+        /// <param name="height">the required gift height</param>
+        /// <param name="requiredBoxAmount"></param>
+        /// <param name="AreThereEnoughBoxes">represents wether there are enough boxes for the gift or not</param>
+        /// <returns>A list of boxes according to the demanded amount for the gifts.</returns>
+        public DoublyLinkedList<Box> SuitableBoxListByAmount(double length, double height, int requiredBoxAmount, out bool AreThereEnoughBoxes)
         {
             MaximumBoxSize(length, height, out double maxLength, out double maxHeight);
 
@@ -107,11 +130,11 @@ namespace DAL
             var suitableBoxesByAmount = new DoublyLinkedList<Box>(); //represents a list of boxes of the most suitable boxes(by the given size) according to the given amount
             foreach (var box in suitableBoxesList)
             {
-                if (desiredBoxAmount is 0)
+                if (requiredBoxAmount is 0)
                     break;
-                if (box.Quantity >= desiredBoxAmount)
+                if (box.Quantity >= requiredBoxAmount)
                 {
-                    box.AmountToGive += desiredBoxAmount;
+                    box.AmountToGive += requiredBoxAmount;
                     suitableBoxesByAmount.AddToEnd(box);
                 }
                 else
@@ -119,14 +142,14 @@ namespace DAL
                     box.AmountToGive += box.Quantity;
                     suitableBoxesByAmount.AddToEnd(box);
                 }
-                desiredBoxAmount -= box.AmountToGive;
+                requiredBoxAmount -= box.AmountToGive;
             }
-            AreThereEnoughBoxes = desiredBoxAmount is 0;
+            AreThereEnoughBoxes = requiredBoxAmount is 0;
             return suitableBoxesByAmount;
         }
 
         /// <summary>
-        /// Occurs after the user agreed to make the purchasing
+        /// Occurs after the user agreed to make the purchasing.
         /// </summary>
         /// <param name="list">The list of boxes to delete from the storage</param>
         public void UpdateTreeAfterPurchase(DoublyLinkedList<Box> list)
