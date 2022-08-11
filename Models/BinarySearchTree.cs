@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Models
+﻿namespace Models
 {
     public class BinarySearchTree<K, V> where K : IComparable<K>
     {
@@ -78,32 +76,66 @@ namespace Models
             if (deleteNode.Left == null && deleteNode.Right == null)
             {
                 var parent = GetParent(deleteNode.Data);
-                if (parent.Right == deleteNode)
-                    parent.Right = null;
+                if (parent != null)
+                {
+                    if (parent.Right == deleteNode)
+                        parent.Right = null;
+                    else
+                        parent.Left = null;
+                }
                 else
-                    parent.Left = null;
+                    this.Root = null;
             }
         }
         private void RemoveNodeWithOneChild(TreeNode<K, V> deleteNode)
         {
-            var perent = GetParent(deleteNode.Data);
-            if (perent != null)
+            var parent = GetParent(deleteNode.Data);
+            if (parent != null)
             {
                 if (deleteNode.Left != null && deleteNode.Right == null)
                 {
-                    if (perent.Right == deleteNode)   // if parent's RIGHT is the node we want to remove
-                        perent.Right = deleteNode.Left;  // parent's RIGHT becomes the deleteNode LEFT
+                    if (parent.Right == deleteNode)   // if parent's RIGHT is the node we want to remove
+                        parent.Right = deleteNode.Left;  // parent's RIGHT becomes the deleteNode LEFT
                     else
-                        perent.Left = deleteNode.Left; // else parent's LEFT becomes the deleteNode LEFT
+                        parent.Left = deleteNode.Left; // else parent's LEFT becomes the deleteNode LEFT
                     return;
                 }
 
                 else if (deleteNode.Left == null && deleteNode.Right != null)
                 {
-                    if (perent.Right == deleteNode)  // if parent's LEFT is the node we want to remove
-                        perent.Right = deleteNode.Right; // parent's RIGHT becomes the deleteNode RIGHT
+                    if (parent.Right == deleteNode)  // if parent's LEFT is the node we want to remove
+                        parent.Right = deleteNode.Right; // parent's RIGHT becomes the deleteNode RIGHT
                     else
-                        perent.Left = deleteNode.Right; // else parent's LEFT becomes the deleteNode RIGHT
+                        parent.Left = deleteNode.Right; // else parent's LEFT becomes the deleteNode RIGHT
+                }
+            }
+            else //the deleted node is the root which doesn't have a parent
+            {
+                if(deleteNode.Left == null && deleteNode.Right != null) //the root has right child
+                {
+                    var minimum = GetMinimumNode(deleteNode.Right);
+                    var minParent = GetParent(minimum.Data);
+                    if(minParent != deleteNode)
+                    {
+                        minParent.Left = null;
+                        if (minimum.Right != null)
+                            minParent.Left = minimum.Right;
+                    }
+                    minimum.Right = deleteNode.Right;
+                    this.Root = minimum;
+                }
+                else if(deleteNode.Left != null && deleteNode.Right == null)
+                {
+                    var maximum = GetMaximumNode(deleteNode.Left);
+                    var maxParent = GetParent(maximum.Data);
+                    if(maxParent != deleteNode)
+                    {
+                        maxParent.Right = null;
+                        if(maximum.Left != null)
+                            maxParent.Right = maximum.Left;
+                    }
+                    maximum.Left = deleteNode.Left;
+                    this.Root = maximum;
                 }
             }
         }
@@ -112,38 +144,41 @@ namespace Models
             if (deleteNode.Left != null && deleteNode.Right != null)
             {
                 var minimum = GetMinimumNode(deleteNode.Right);
-                var parant = GetParent(deleteNode.Data);
+                var parent = GetParent(deleteNode.Data);
 
                 var minParent = GetParent(minimum.Data);  //find minimum's parent
                 if (minParent != deleteNode)
                 {
                     minParent.Left = null;
                     if (minimum.Right != null) // if minimum has a right node
-                    {
                         minParent.Left = minimum.Right; // minimum's parent takes the node of the minimum's RIGHT node
-                    }
                 }
                 minimum.Left = deleteNode.Left;    // minimum takes the RIGHT and the LEFT of the deleteNode
                 if (deleteNode.Right != minimum)
                     minimum.Right = deleteNode.Right;
 
-
-                if (parant.Right == deleteNode)   // connecting the node's parent with the minimum
-                    parant.Right = minimum;
+                if (parent is not null)
+                {
+                    if (parent.Right == deleteNode)   // connecting the node's parent with the minimum
+                        parent.Right = minimum;
+                    else
+                        parent.Left = minimum;
+                }
                 else
-                    parant.Left = minimum;
+                {
+                    this.Root = minimum;
+                }
             }
         }
 
         public void RemoveNode(K data)
         {
             var deleteNode = Get(data);
-            if (deleteNode != null && deleteNode != Root)
+            if (deleteNode != null)
             {
                 RemoveNodeWithoutChildren(deleteNode);
                 RemoveNodeWithOneChild(deleteNode);
                 RemoveNodeWithTwoChildren(deleteNode);
-                deleteNode = null;
             }
         }
 
@@ -152,6 +187,12 @@ namespace Models
             if (t.Left == null)
                 return t;
             return GetMinimumNode(t.Left);
+        }
+        public TreeNode<K, V> GetMaximumNode(TreeNode<K, V> t)
+        {
+            if (t.Right == null)
+                return t;
+            return GetMaximumNode(t.Right);
         }
 
         /// <summary>

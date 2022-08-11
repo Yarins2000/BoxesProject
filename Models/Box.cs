@@ -14,21 +14,34 @@ namespace Models
         public double Length { get; set; }
         public double Height { get; set; }
 
+        /// <summary>
+        /// Represents the amount of boxes for the gift. After the purchasing, it'd be decreased from the box's quantity.
+        /// </summary>
+        public int AmountToGive { get; set; } = 0;
+
+        /// <summary>
+        /// Represents the reference for the DateTime Queue
+        /// </summary>
+        public QNode<DateTime> DateReference { get; set; }
+
         public Box(double length, double height, int quantity, DateTime releaseDate = default)
         {
             Length = length;
             Height = height;
             Quantity = quantity;
-            ReleaseDate = default ? DateTime.Now : releaseDate;//======================check!!!
+            ReleaseDate = releaseDate == default ? DateTime.Now : releaseDate;
+            DateReference.Data = ReleaseDate;
         }
 
         public void AddBoxCount(int q) => Quantity += q;
 
-        public void BuyABox()
+        public void BuyBoxes(int q)
         {
             ReleaseDate = DateTime.Now;
-            Quantity--;
+            Quantity -= q;
         }
+
+        //public string ShowBoxQuantityAndSize(int q) => $"{q} boxes of size {Length}X{Height}";
 
         public override string ToString()
         {

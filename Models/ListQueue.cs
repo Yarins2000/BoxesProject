@@ -2,7 +2,7 @@
 
 namespace Models
 {
-    public class ListQueue<T> : IEnumerable<QNode<T>>
+    public class ListQueue<T> : IEnumerable<T>
     {
         private DoublyLinkedList<T> _list;
 
@@ -28,7 +28,7 @@ namespace Models
 
         public bool IsEmpty() => _list.IsEmpty();
 
-        public IEnumerator<QNode<T>> GetEnumerator() => _list.GetEnumerator();
+        public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

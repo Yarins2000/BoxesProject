@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class DoublyLinkedList<T> : IEnumerable<QNode<T>>
+    public class DoublyLinkedList<T> : IEnumerable<T>
     {
         public QNode<T> Head { get; set; }
         public QNode<T> Tail { get; set; }
@@ -68,12 +68,12 @@ namespace Models
 
         public bool IsEmpty() => Length == 0;
 
-        public IEnumerator<QNode<T>> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             var current = Head;
             while(current != null)
             {
-                yield return current;
+                yield return current.Data;
                 current = current.Next;
             }
         }
@@ -82,12 +82,12 @@ namespace Models
             return GetEnumerator();
         }
 
-        public override string ToString()
-        {
-            string res = "";
-            foreach (var item in this)
-                res += item.Data + ", ";
-            return res;
-        }
+        //public override string ToString()
+        //{
+        //    string res = "";
+        //    foreach (var item in this)
+        //        res += item.Data + ", ";
+        //    return res;
+        //}
     }
 }

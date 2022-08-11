@@ -6,6 +6,7 @@ namespace DAL
     public class BoxManager
     {
         BinarySearchTree<double, BinarySearchTree<double, Box>> _storage;
+        ListQueue<QNode<DateTime>> _boxesDates;
 
         private readonly double _percentageRange = Configuration.Data.PercentageRange;
         private readonly int _maxQuantity = Configuration.Data.MaxQuantity;
@@ -13,6 +14,7 @@ namespace DAL
         public BoxManager()
         {
             _storage = DBMock.Instance.Tree;
+            _boxesDates = DBMock.Instance.BoxesDates;
         }
 
         public void AddNewBox(Box b)
@@ -29,13 +31,17 @@ namespace DAL
                     currentBox.Quantity = currentBox.Quantity > _maxQuantity ? _maxQuantity : currentBox.Quantity;
                 }
                 else
+                {
                     innerTree.AddNode(b.Height, b);
+                    _boxesDates.Enqueue(b.DateReference);
+                }
             }
             else
             {
                 var newInnerTree = new BinarySearchTree<double, Box>();
                 newInnerTree.AddNode(b.Height, b);
                 _storage.AddNode(b.Length, newInnerTree);
+                _boxesDates.Enqueue(b.DateReference);
             }
         }
         public void AddNewBoxes(params Box[] boxes)
@@ -55,30 +61,13 @@ namespace DAL
         public Box FindBox(double x, double y) => _storage.GetValue(x).GetValue(y);
 
         /// <summary>
-        /// Get a binary tree with the suitable boxes(according to the given values)
+        /// Get a doubly linked list with the suitable boxes(according to the given values)
         /// </summary>
         /// <param name="length"></param>
         /// <param name="maxLength"></param>
         /// <param name="height"></param>
         /// <param name="maxHeight"></param>
         /// <returns></returns>
-        //public BinarySearchTree<double, BinarySearchTree<double, Box>> GetSuitableBoxes(double length, double maxLength, double height, double maxHeight)
-        //{
-        //    var suitableTree = new BinarySearchTree<double, BinarySearchTree<double, Box>>();
-        //    var xTreeEnumerator = _storage.GetSuitableNodesByRange(length, maxLength);
-        //    foreach (var node in xTreeEnumerator)
-        //    {
-        //        suitableTree.AddNode(node.Data, new BinarySearchTree<double, Box>());
-        //        if (node.Value is not null)
-        //        {
-        //            var innerXTreeEnumerator = node.Value.GetSuitableNodesByRange(height, maxHeight);
-        //            foreach (var innerNode in innerXTreeEnumerator)
-        //                suitableTree.GetValue(node.Data).AddNode(innerNode.Data, innerNode.Value);
-        //                //get the current value, then add a new node with the innerNode data&value each loop(iterates through the suitable values in the node.Value)
-        //        }
-        //    } 
-        //    return suitableTree;
-        //}
         public DoublyLinkedList<Box> GetSuitableBoxes(double length, double maxLength, double height, double maxHeight)
         {
             var suitableList = new DoublyLinkedList<Box>();
@@ -103,40 +92,59 @@ namespace DAL
         }
 
         /// <summary>
-        /// choose the best box choices for the gift.
+        /// Recieves the suitable list of boxes(according to the demands) 
         /// </summary>
-        /// <param name="x">the required gift's length</param>
-        /// <param name="y">the required gift's height</param>
-        public void ChooseBoxesForGift(double x, double y, int desiredBoxCount)
+        /// <param name="length"></param>
+        /// <param name="height"></param>
+        /// <param name="desiredBoxAmount"></param>
+        /// <param name="AreThereEnoughBoxes">represents wether there are enough boxes for the gift</param>
+        /// <returns>A list of boxes according to the demanded amount of boxes for the gift</returns>
+        public DoublyLinkedList<Box> SuitableBoxListByAmount(double length, double height, int desiredBoxAmount, out bool AreThereEnoughBoxes)
         {
-            double maxLength, maxHeight;
-            MaximumBoxSize(x, y, out maxLength, out maxHeight);
+            MaximumBoxSize(length, height, out double maxLength, out double maxHeight);
 
-            var suitableBoxesTree = GetSuitableBoxes(x, maxLength, y, maxHeight);
+            var suitableBoxesList = GetSuitableBoxes(length, maxLength, height, maxHeight); //represents a list of all the suitable boxes(according to the given size) from the tree
+            var suitableBoxesByAmount = new DoublyLinkedList<Box>(); //represents a list of boxes of the most suitable boxes(by the given size) according to the given amount
+            foreach (var box in suitableBoxesList)
+            {
+                if (desiredBoxAmount is 0)
+                    break;
+                if (box.Quantity >= desiredBoxAmount)
+                {
+                    box.AmountToGive += desiredBoxAmount;
+                    suitableBoxesByAmount.AddToEnd(box);
+                }
+                else
+                {
+                    box.AmountToGive += box.Quantity;
+                    suitableBoxesByAmount.AddToEnd(box);
+                }
+                desiredBoxAmount -= box.AmountToGive;
+            }
+            AreThereEnoughBoxes = desiredBoxAmount is 0;
+            return suitableBoxesByAmount;
         }
 
-        /*public string ChooseABoxForGift(double x, double y)
+        /// <summary>
+        /// Occurs after the user agreed to make the purchasing
+        /// </summary>
+        /// <param name="list">The list of boxes to delete from the storage</param>
+        public void UpdateTreeAfterPurchase(DoublyLinkedList<Box> list)
         {
-            var wantedBox = FindBox(x, y);
-            if (wantedBox is not null)
+            foreach (var box in list)
             {
-                wantedBox.BuyABox();
-                return wantedBox.ToString(); //change later
-            }
-            else
-            {
-                if (_storage.IsExist(x))
+                box.Quantity -= box.AmountToGive;
+                box.AmountToGive = 0;
+                if (box.Quantity <= 0)
+                    RemoveBox(box);
+                else
                 {
-                    var innerTree = _storage.GetValue(x); //the inner tree of the corresponded x
-                    double maxSuitableSize = y + (y * PERCENTAGE_RANGE) / 100; //the max height that could be offered
-                    var SmallestSuitableBox = innerTree.Root.Right is not null ?
-                        innerTree.GetMinimumNode(innerTree.Root.Right).Value : null;
-                    if (SmallestSuitableBox is not null && SmallestSuitableBox.Height >= maxSuitableSize)
-                        SmallestSuitableBox.BuyABox();
+                    //update the box.DateReference to current date and put it last in the queue
                 }
             }
-            return "";
-        }*/
+        }
 
+        //inorder of the tree - complete later!
+        public string Show() => "";
     }
 }

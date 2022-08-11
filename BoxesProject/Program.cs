@@ -38,55 +38,56 @@ namespace BoxesProject
             var tree = DBMock.Instance.Tree;
             tree.TraverseInOrder(Console.WriteLine);
             Console.WriteLine();
+
             BoxManager bm = new();
-            //bm.ChooseBoxesForGift(4, 6, 10);
+            var list = bm.SuitableBoxListByAmount(8, 7, 22, out bool flag);
+            bm.UpdateTreeAfterPurchase(list);
+
+            BoxManagerUI bmUI = new();
+            bmUI.Start();
+
         }
     }
-    /*
-     * public bool FindLilBiggerValue(Tkey minKey, Tkey maxKey, out Tvalue value) // O(log n)
+    /*public void RemoveNode(k key)
         {
-            if (IsEmpty())
+            RemoveNode(root, key);
+        }
+        private Node<k, v> RemoveNode(Node<k, v> root, k key)
+        {
+            if (root == null)
+                return root;
+            if (root.Key.CompareTo(key) > 0)
+                root.Left = RemoveNode(root.Left, key);
+            else if (root.Key.CompareTo(key) < 0)
             {
-                value = default(Tvalue);
-                return false;
+                root.Right = RemoveNode(root.Right, key);
             }
-            value = FindLilBiggerValue(minKey, maxKey, _root);
-            return value != null;
-        }
-        Tvalue FindLilBiggerValue(Tkey minKey, Tkey maxKey, TreeNode node) // O(log n)
-        {
-            if (node == null) return default;
-            int compMIN = node.CompareTo(minKey);
-            int compMAX = node.CompareTo(maxKey);
-
-            if (compMIN >= 0 && compMAX <= 0) // If the dimensions match the 
-                if (node.Left != null && node.Left.Key.CompareTo(minKey) > 0)
-                    return FindLilBiggerValue(minKey, maxKey, node.Left);
+            //we found the node
+            else
+            {
+                //Node has no children
+                if (root.Left == null && root.Right == null)
+                {
+                    //update root to null
+                    root = null;
+                }
+                //node has two children
+                else if (root.Left != null && root.Right != null)
+                {
+                    var maxNode = FindMax(root.Right);
+                    //copy the value
+                    root.Key = maxNode.Key;
+                    root.Value = maxNode.Value;
+                    root.Right = RemoveNode(root.Right, maxNode.Key);
+                }
+                //node has one children
                 else
-                    return node.Value;
-            else if (compMIN < 0)
-                return FindLilBiggerValue(minKey, maxKey, node.Right);
-            else if (compMAX > 0)
-                return FindLilBiggerValue(minKey, maxKey, node.Left);
-            return default;
-        }
-
-    public IEnumerable GetRange(Tkey minKey, Tkey maxKey) => GetRange(_root, minKey, maxKey);
-        IEnumerable GetRange(TreeNode node, Tkey minKey, Tkey maxKey)
-        {
-            if (node == null) yield break;
-
-            if (minKey.CompareTo(node.Key) < 0) 
-                foreach (TreeNode leftNode in GetRange(node.Left, minKey, maxKey))
-                    yield return leftNode;
-
-            // If NODE's kEY lies in range, then YIELD RETURNS NODE
-            if (minKey.CompareTo(node.Key) <= 0 && maxKey.CompareTo(node.Key) >= 0)
-                yield return node;
-
-            // Recursively call the right subtree
-            foreach (TreeNode rightNode in GetRange(node.Right, minKey, maxKey))
-                yield return rightNode;
+                {
+                    var child = root.Left != null ? root.Left : root.Right;
+                    root = child;
+                }
+            }
+            return root;
         }
      */
 }

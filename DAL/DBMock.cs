@@ -15,27 +15,18 @@ namespace DAL
                 return _instance;
             }
         }
+        //change to internal later!!!
         public BinarySearchTree<double, BinarySearchTree<double, Box>> Tree { get; init; }
+        public ListQueue<QNode<DateTime>> BoxesDates { get; init; }
         private DBMock()
         {
             Tree = new();
+            BoxesDates = new();
             Initialize();
         }
 
         private void Initialize()
         {
-            /*5, 
-            6, 
-            4, 
-            8, 
-            10,
-            3, 
-            4.5
-            4.3
-            4.7
-            4.8
-            4.6
-            4.2*/
             Box[] boxes = new Box[20];
             Box b1 = new(4, 5, 2);
             Box b1_1 = new(4, 4, 5);
@@ -54,9 +45,11 @@ namespace DAL
             Box b12 = new(4.2, 6, 10);
             Box b12_1 = new(4.2, 5, 5);
             Box b12_2 = new(4.2, 8, 3);
+            Box b13 = new(10, 5.2, 20);
 
-            AddNewBoxes(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b11_1, b12, b1_1, b1_2, b12_1, b12_2);
+            AddNewBoxes(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b11_1, b12, b1_1, b1_2, b12_1, b12_2, b13);
         }
+        //check later
         public void AddNewBox(Box b)
         {
             if (b is null || b.Quantity < 0) return;
