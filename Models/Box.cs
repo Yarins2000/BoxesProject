@@ -35,7 +35,7 @@
             Quantity -= q;
         }
 
-        //public string ShowBoxQuantityAndSize(int q) => $"{q} boxes of size {Length}X{Height}";
+        public bool IsEmpty() => Quantity is 0;
 
         public override string ToString()
         {

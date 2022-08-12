@@ -21,9 +21,7 @@ namespace BoxesProject
         /// <summary>
         /// choose the best box choices for the gift.
         /// </summary>
-        /// <param name="x">the required gift's length</param>
-        /// <param name="y">the required gift's height</param>
-        public void ChooseBoxesForGift(/*double length, double height, int desiredBoxAmount*/)
+        public void ChooseBoxesForGift()
         {
             Console.WriteLine("Please type the length you want for the gift: ");
             bool isValid = SizeValidation(Console.ReadLine(), out double length);
@@ -59,11 +57,21 @@ namespace BoxesProject
                 result += "Unfortunately we don't have the amount you asked for, would you still want to complete the purchasing?\n";
             else
                 result += "Would you want to make the purchasing?\n";
+            result += "type yes / no";
 
             Console.WriteLine(result);
-            string answer = Console.ReadLine();
+            string answer = Console.ReadLine().ToLower();
             if (answer is "yes")
+            {
                 _bm.UpdateTreeAfterPurchase(suitableBoxesListByAmount);
+                foreach (var box in suitableBoxesListByAmount)
+                {
+                    if(_bm.IsBoxQuantityAlmostEmpty(box))
+                        Console.WriteLine($"Pay attention that box {box.Length}X{box.Height} is almost out of stock, only {box.Quantity} is/are left.");
+                    if(box.IsEmpty())
+                        Console.WriteLine($"Pay attention that box {box.Length}X{box.Height} is out of stock.");
+                }
+            }
             else
                 Console.WriteLine("Alright then, Bye");
         }

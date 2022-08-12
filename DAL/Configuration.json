@@ -1,5 +1,5 @@
 {
   "maxQuantity": 50,
-  "minQuantityToAlert": 5,
+  "minQuantityToAlert": 3,
   "PercentageRange": 50
 }

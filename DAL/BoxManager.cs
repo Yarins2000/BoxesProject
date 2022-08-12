@@ -16,6 +16,7 @@ namespace DAL
 
         private readonly double _percentageRange = Configuration.Data.PercentageRange;
         private readonly int _maxQuantity = Configuration.Data.MaxQuantity;
+        private readonly int _minQuantityToAlert = Configuration.Data.MinQuantityToAlert;
 
         public BoxManager()
         {
@@ -148,6 +149,8 @@ namespace DAL
             return suitableBoxesByAmount;
         }
 
+        public bool IsBoxQuantityAlmostEmpty(Box b) => b.Quantity <= _minQuantityToAlert && b.Quantity > 0;
+
         /// <summary>
         /// Occurs after the user agreed to make the purchasing.
         /// </summary>
@@ -158,7 +161,7 @@ namespace DAL
             {
                 box.Quantity -= box.AmountToGive;
                 box.AmountToGive = 0;
-                if (box.Quantity <= 0)
+                if (box.IsEmpty())
                     RemoveBox(box);
                 else
                 {
