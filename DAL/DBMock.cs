@@ -27,27 +27,27 @@ namespace DAL
 
         private void Initialize()
         {
-            Box[] boxes = new Box[20];
-            Box b1 = new(4, 5, 7);
-            Box b1_1 = new(4, 4, 5);
-            Box b1_2 = new(4, 6, 5);
-            Box b2 = new(6.5, 2.5, 6);
-            Box b3 = new(8, 9, 5);
-            Box b4 = new(5.3, 4.8, 10);
-            Box b5 = new(8.9, 7, 11);
-            Box b6 = new(7.5, 5, 8);
-            Box b7 = new(8, 5, 8);
-            Box b8 = new(8, 12.5, 4);
-            Box b9 = new(8, 7, 6);
-            Box b10 = new(5.5, 5.5, 10);
-            Box b11 = new(5.3, 5, 6);
-            Box b11_1 = new(5.3, 7, 5);
-            Box b12 = new(4.2, 6, 10);
-            Box b12_1 = new(4.2, 5, 5);
-            Box b12_2 = new(4.2, 8, 9);
-            Box b13 = new(10, 5.2, 20);
+            //Box[] boxes = new Box[20];
+            Box b1 = new(4, 5, 7, new DateTime(2022, 11, 1));
+            Box b1_1 = new(4, 4, 5, new DateTime(2022, 11, 2));
+            Box b1_2 = new(4, 6, 5, new DateTime(2022, 11, 3));
+            Box b2 = new(6.5, 2.5, 6, new DateTime(2022, 11, 4));
+            Box b3 = new(8, 9, 5, new DateTime(2022, 11, 5));
+            Box b4 = new(5.3, 4.8, 10, new DateTime(2022, 11, 6));
+            Box b5 = new(8.9, 7, 11, new DateTime(2022, 11, 7));
+            Box b6 = new(7.5, 5, 8, new DateTime(2022, 11, 8));
+            Box b7 = new(8, 5, 8, new DateTime(2022, 11, 9));
+            Box b8 = new(8, 12.5, 4, new DateTime(2022, 11, 10));
+            Box b9 = new(8, 7, 6, new DateTime(2022, 11, 11));
+            Box b10 = new(5.5, 5.5, 10, new DateTime(2022, 11, 12));
+            Box b11 = new(5.3, 5, 6, new DateTime(2022, 11, 13));
+            Box b11_1 = new(5.3, 7, 5, new DateTime(2022, 11, 14));
+            Box b12 = new(4.2, 6, 10, new DateTime(2022, 11, 15));
+            Box b12_1 = new(4.2, 5, 5, new DateTime(2022, 11, 16));
+            Box b12_2 = new(4.2, 8, 9, new DateTime(2022, 11, 17));
+            Box b13 = new(10, 5.2, 20, new DateTime(2022, 11, 18));
 
-            AddNewBoxes(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b11_1, b12, b1_1, b1_2, b12_1, b12_2, b13);
+            AddNewBoxes(b1, b1_1, b1_2, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b11_1, b12, b12_1, b12_2, b13);
         }
         //check later
         public void AddNewBox(Box b)
@@ -63,13 +63,17 @@ namespace DAL
                     currentBox.AddBoxCount(b.Quantity);
                 }
                 else
+                {
                     innerTree.AddNode(b.Height, b);
+                    BoxesDates.Enqueue(b.DateReference);
+                }
             }
             else
             {
                 var newInnerTree = new BinarySearchTree<double, Box>();
                 newInnerTree.AddNode(b.Height, b);
                 Tree.AddNode(b.Length, newInnerTree);
+                BoxesDates.Enqueue(b.DateReference);
             }
         }
         public void AddNewBoxes(params Box[] boxes)

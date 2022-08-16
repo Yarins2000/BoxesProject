@@ -296,7 +296,6 @@
                     yield return node;
         }
 
-        //maybe delete it
         public IEnumerable<TreeNode<K, V>> TraverseInOrderByEnumerator() => Enumerate(Root);
         private IEnumerable<TreeNode<K, V>> Enumerate(TreeNode<K, V> root)
         {

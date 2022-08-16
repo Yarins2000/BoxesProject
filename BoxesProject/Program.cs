@@ -36,15 +36,16 @@ namespace BoxesProject
             #endregion
 
             var tree = DBMock.Instance.Tree;
-            tree.TraverseInOrder(Console.WriteLine);
-            Console.WriteLine();
 
             BoxManager bm = new();
-            var list = bm.SuitableBoxListByAmount(8, 7, 22, out bool flag);
-            bm.UpdateTreeAfterPurchase(list);
+            bm.Traverse(Console.WriteLine);
+            //var list = bm.SuitableBoxListByAmount(8, 7, 22, out bool flag);
+            //bm.UpdateTreeAfterPurchase(list);
             
             BoxManagerUI bmUI = new();
-            bmUI.Start();
+            //bmUI.Start();
+
+            //bmUI.ChooseBoxesForGift();
 
         }
     }

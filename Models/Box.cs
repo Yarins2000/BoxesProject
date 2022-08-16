@@ -3,7 +3,7 @@
     public class Box
     {
         public int Quantity { get; set; }
-        public DateTime ReleaseDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public double Length { get; set; }
         public double Height { get; set; }
@@ -23,15 +23,15 @@
             Length = length;
             Height = height;
             Quantity = quantity;
-            ReleaseDate = releaseDate == default ? DateTime.Now : releaseDate;
-            DateReference.Data = ReleaseDate;
+            UpdatedDate = releaseDate == default ? DateTime.Now : releaseDate;
+            DateReference = new QNode<DateTime>(UpdatedDate);
         }
 
         public void AddBoxCount(int q) => Quantity += q;
 
         public void BuyBoxes(int q)
         {
-            ReleaseDate = DateTime.Now;
+            UpdatedDate = DateTime.Now;
             Quantity -= q;
         }
 
@@ -40,7 +40,7 @@
         public override string ToString()
         {
             return $"Box's length and width: {Length}, height: {Height}, quantity in storage: {Quantity}" +
-                $", released date: {ReleaseDate:d}";
+                $", updated date: {UpdatedDate:d}";
         }
     }
 }

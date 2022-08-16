@@ -1,5 +1,4 @@
 ﻿using Models;
-using System.Collections;
 
 namespace DAL
 {
@@ -43,6 +42,8 @@ namespace DAL
                 }
                 else
                 {
+                    b.UpdatedDate = DateTime.Now;
+                    b.DateReference = new QNode<DateTime>(b.UpdatedDate);
                     innerTree.AddNode(b.Height, b);
                     _boxesDates.Enqueue(b.DateReference);
                 }
@@ -72,6 +73,22 @@ namespace DAL
             if (innerTree.IsEmpty())
                 _storage.RemoveNode(b.Length);
         }
+
+        public void Traverse(Action<string> act)
+        {
+            var allNodes = _storage.TraverseInOrderByEnumerator();
+            foreach (var node in allNodes)
+            {
+                if (node.Value is not null)
+                {
+                    var innerAllNodes = _storage.GetValue(node.Data).TraverseInOrderByEnumerator();
+                    foreach (var innerNode in innerAllNodes)
+                        act(innerNode.Value.ToString());
+                }
+                act("");
+            }
+        }
+
 
         /// <summary>
         /// Finds a box in the tree according to the given size values.
@@ -166,6 +183,12 @@ namespace DAL
                 else
                 {
                     //update the box.DateReference to current date and put it last in the queue
+                    
+                    box.DateReference.Previous.Next = box.DateReference.Next;
+                    box.DateReference.Next.Previous = box.DateReference.Previous;
+                    box.UpdatedDate = DateTime.Now;
+                    box.DateReference = new(DateTime.Now);
+                    _boxesDates.Enqueue(box.DateReference);
                 }
             }
         }
