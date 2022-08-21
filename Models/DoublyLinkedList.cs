@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Collections;
 namespace Models
 {
     /// <summary>
@@ -15,13 +9,15 @@ namespace Models
         /// <summary>
         /// Represents the head (start) of the list.
         /// </summary>
-        public QNode<T> Head { get; set; }
+        internal QNode<T> Head { get; private set; }
         /// <summary>
         /// Represents the tail (end) of the list.
         /// </summary>
-        public QNode<T> Tail { get; set; }
-
-        public int Length { get; set; } = 0;
+        internal QNode<T> Tail { get; private set; }
+        /// <summary>
+        /// Represents the list length.
+        /// </summary>
+        public int Length { get; private set; }
 
         public DoublyLinkedList()
         {
@@ -33,9 +29,11 @@ namespace Models
         /// </summary>
         public void AddToStart(T value)
         {
-            var newNode = new QNode<T>(value);
-            newNode.Next = Head;
-            if(Head == null)
+            var newNode = new QNode<T>(value)
+            {
+                Next = Head
+            };
+            if (Head == null)
                 Tail = newNode;
             else
                 Head.Previous = newNode;
@@ -86,7 +84,39 @@ namespace Models
                 Length--;
             }
         }
+        /// <summary>
+        /// Removes a specific value from the list.
+        /// </summary>
+        /// <param name="value">The wanted value to remove</param>
+        /// <returns>the removed value</returns>
+        public T Remove(T value)
+        {
+            QNode<T> current = Head;
+            while(current is not null) 
+            {
+                if(current.Data.Equals(value))
+                {
+                    if (current.Next is null)
+                        Tail = current.Previous;
+                    else
+                        current.Next.Previous = current.Previous;
 
+                    if (current.Previous is null)
+                        Head = current.Next;
+                    else
+                        current.Previous.Next = current.Next;
+                    Length--;
+                    break;
+                }
+                current = current.Next;
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>True if the list is empty, otherwise false.</returns>
         public bool IsEmpty() => Length == 0;
 
         public IEnumerator<T> GetEnumerator()
@@ -103,12 +133,12 @@ namespace Models
             return GetEnumerator();
         }
 
-        //public override string ToString()
-        //{
-        //    string res = "";
-        //    foreach (var item in this)
-        //        res += item.Data + ", ";
-        //    return res;
-        //}
+        public override string ToString()
+        {
+            string res = "";
+            foreach (var item in this)
+                res += item + "\n";
+            return res;
+        }
     }
 }

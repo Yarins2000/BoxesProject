@@ -9,51 +9,52 @@ namespace DAL
         /// </summary>
         BinarySearchTree<double, BinarySearchTree<double, Box>> _storage;
         /// <summary>
-        /// The dates queue from the DB.
+        /// The box queue from the DB.
         /// </summary>
-        ListQueue<QNode<DateTime>> _boxesDates;
+        ListQueue<Box> _boxesQueue;
 
         private readonly double _percentageRange = Configuration.Data.PercentageRange;
         private readonly int _maxQuantity = Configuration.Data.MaxQuantity;
         private readonly int _minQuantityToAlert = Configuration.Data.MinQuantityToAlert;
+        private readonly int _maxDaysUntilExpiration = Configuration.Data.MaxDaysUntilExpiration;
 
         public BoxManager()
         {
             _storage = DBMock.Instance.Tree;
-            _boxesDates = DBMock.Instance.BoxesDates;
+            _boxesQueue = DBMock.Instance.BoxesDates;
         }
 
         /// <summary>
         /// Adds a new box to the tree.
         /// </summary>
-        /// <param name="b">The new added box</param>
-        public void AddNewBox(Box b)
+        /// <param name="box">The new added box</param>
+        public void AddNewBox(Box box)
         {
-            if (b is null || b.Quantity < 0) return;
+            if (box is null || box.Quantity < 0) return;
 
-            if (_storage.IsExist(b.Length))
+            if (_storage.IsExist(box.Length))
             {
-                var innerTree = _storage.GetValue(b.Length);
-                if (innerTree.IsExist(b.Height))
+                var innerTree = _storage.GetValue(box.Length);
+                if (innerTree.IsExist(box.Height))
                 {
-                    var currentBox = innerTree.GetValue(b.Height);
-                    currentBox.AddBoxCount(b.Quantity);
+                    var currentBox = innerTree.GetValue(box.Height);
+                    currentBox.AddBoxCount(box.Quantity);
                     currentBox.Quantity = currentBox.Quantity > _maxQuantity ? _maxQuantity : currentBox.Quantity;
                 }
                 else
                 {
-                    b.UpdatedDate = DateTime.Now;
-                    b.DateReference = new QNode<DateTime>(b.UpdatedDate);
-                    innerTree.AddNode(b.Height, b);
-                    _boxesDates.Enqueue(b.DateReference);
+                    box.UpdateTheDate();
+                    innerTree.AddNode(box.Height, box);
+                    _boxesQueue.Enqueue(box);
                 }
             }
             else
             {
                 var newInnerTree = new BinarySearchTree<double, Box>();
-                newInnerTree.AddNode(b.Height, b);
-                _storage.AddNode(b.Length, newInnerTree);
-                _boxesDates.Enqueue(b.DateReference);
+                box.Quantity = box.Quantity > _maxQuantity ? _maxQuantity : box.Quantity;
+                newInnerTree.AddNode(box.Height, box);
+                _storage.AddNode(box.Length, newInnerTree);
+                _boxesQueue.Enqueue(box);
             }
         }
         public void AddNewBoxes(params Box[] boxes)
@@ -72,39 +73,25 @@ namespace DAL
             innerTree.RemoveNode(b.Height);
             if (innerTree.IsEmpty())
                 _storage.RemoveNode(b.Length);
+            _boxesQueue.Dequeue(b);
         }
 
-        public void Traverse(Action<string> act)
+        /// <summary>
+        /// Calculates the maximum top range of the given length and height. 
+        /// </summary>
+        public void MaximumBoxSize(double length, double height, out double maxLength, out double maxHeight)
         {
-            var allNodes = _storage.TraverseInOrderByEnumerator();
-            foreach (var node in allNodes)
-            {
-                if (node.Value is not null)
-                {
-                    var innerAllNodes = _storage.GetValue(node.Data).TraverseInOrderByEnumerator();
-                    foreach (var innerNode in innerAllNodes)
-                        act(innerNode.Value.ToString());
-                }
-                act("");
-            }
+            maxLength = length + length * _percentageRange / 100;
+            maxHeight = height + height * _percentageRange / 100;
         }
 
-
         /// <summary>
-        /// Finds a box in the tree according to the given size values.
+        /// Gets a list with the suitable boxes (according to the given values).
         /// </summary>
-        /// <param name="length">the box's length</param>
-        /// <param name="height">the box's height</param>
-        /// <returns>The box with the given values.</returns>
-        public Box FindBox(double length, double height) => _storage.GetValue(length).GetValue(height);
-
-        /// <summary>
-        /// Gets a list with the suitable boxes(according to the given values).
-        /// </summary>
-        /// <param name="length">the boxes minimum length(the best result)</param>
-        /// <param name="maxLength">the boxes maximum length(according to a specific percentage range)</param>
-        /// <param name="height">the boxes minimum height(the best result)</param>
-        /// <param name="maxHeight">the boxes maximum height(according to a specific percentage range)</param>
+        /// <param name="length">the boxes minimum length (the best result)</param>
+        /// <param name="maxLength">the boxes maximum length (according to a specific percentage range)</param>
+        /// <param name="height">the boxes minimum height (the best result)</param>
+        /// <param name="maxHeight">the boxes maximum height (according to a specific percentage range)</param>
         /// <returns>List with the suitable boxes from the storage.</returns>
         public DoublyLinkedList<Box> GetSuitableBoxes(double length, double maxLength, double height, double maxHeight)
         {
@@ -124,20 +111,11 @@ namespace DAL
         }
 
         /// <summary>
-        /// Calculates the maximum top range of the given length and height. 
-        /// </summary>
-        public void MaximumBoxSize(double length, double height, out double maxLength, out double maxHeight)
-        {
-            maxLength = length + length * _percentageRange / 100;
-            maxHeight = height + height * _percentageRange / 100;
-        }
-
-        /// <summary>
         /// Recieves the suitable list of boxes(from the <see cref="GetSuitableBoxes(double, double, double, double"/> function) and takes the 'amount' best of them.
         /// </summary>
         /// <param name="length">the required gift length</param>
         /// <param name="height">the required gift height</param>
-        /// <param name="requiredBoxAmount"></param>
+        /// <param name="requiredBoxAmount">the demanded amount that the user asked</param>
         /// <param name="AreThereEnoughBoxes">represents wether there are enough boxes for the gift or not</param>
         /// <returns>A list of boxes according to the demanded amount for the gifts.</returns>
         public DoublyLinkedList<Box> SuitableBoxListByAmount(double length, double height, int requiredBoxAmount, out bool AreThereEnoughBoxes)
@@ -166,13 +144,17 @@ namespace DAL
             return suitableBoxesByAmount;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>True if the box is about to be out of stock (according to a minimum amount the alerts)</returns>
         public bool IsBoxQuantityAlmostEmpty(Box b) => b.Quantity <= _minQuantityToAlert && b.Quantity > 0;
 
         /// <summary>
         /// Occurs after the user agreed to make the purchasing.
         /// </summary>
-        /// <param name="list">The list of boxes to delete from the storage</param>
-        public void UpdateTreeAfterPurchase(DoublyLinkedList<Box> list)
+        /// <param name="list">The list of boxes that would be deleted from the storage</param>
+        public void UpdateStorageAfterPurchase(DoublyLinkedList<Box> list)
         {
             foreach (var box in list)
             {
@@ -182,18 +164,46 @@ namespace DAL
                     RemoveBox(box);
                 else
                 {
-                    //update the box.DateReference to current date and put it last in the queue
-                    
-                    box.DateReference.Previous.Next = box.DateReference.Next;
-                    box.DateReference.Next.Previous = box.DateReference.Previous;
-                    box.UpdatedDate = DateTime.Now;
-                    box.DateReference = new(DateTime.Now);
-                    _boxesDates.Enqueue(box.DateReference);
+                    box.UpdateTheDate();
+                    _boxesQueue.Dequeue(box);
+                    _boxesQueue.Enqueue(box);
                 }
             }
         }
 
-        //inorder of the tree - complete later!
-        public string Show() => "";
+        /// <summary>
+        /// Show all the boxes from the storage.
+        /// </summary>
+        public void ShowAllBoxes(Action<string> act)
+        {
+            var allNodes = _storage.TraverseInOrderByEnumerator();
+            foreach (var node in allNodes)
+            {
+                if (node.Value is not null)
+                {
+                    var innerAllNodes = _storage.GetValue(node.Data).TraverseInOrderByEnumerator();
+                    foreach (var innerNode in innerAllNodes)
+                        act(innerNode.Value.ToString());
+                }
+                act("");
+            }
+        }
+
+        /// <summary>
+        /// Removes the expired boxes (boxes that haven't been bought for a period of time that was determined).
+        /// </summary>
+        public void DeleteExpiredBoxes(Action<string> act)
+        {
+            foreach (var box in _boxesQueue)
+            {
+                var currentBoxDate = box.UpdatedDate;
+                if (currentBoxDate.AddDays(_maxDaysUntilExpiration) < DateTime.Now)
+                {
+                    act("Box: " + box.ToString() + "\nhas been removed from stock since it's expired.");
+                    RemoveBox(box);
+                    _boxesQueue.Dequeue(box);
+                }
+            }
+        }
     }
 }

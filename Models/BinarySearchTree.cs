@@ -2,7 +2,7 @@
 {
     public class BinarySearchTree<K, V> where K : IComparable<K>
     {
-        public TreeNode<K, V> Root { get; set; }
+        private TreeNode<K, V> Root { get; set; }
 
         public BinarySearchTree()
         {
@@ -10,7 +10,7 @@
         }
 
         /// <summary>
-        /// Add new node to the tree
+        /// Adds a new node to the tree.
         /// </summary>
         /// <param name="data">the node's data</param>
         /// <param name="value">the node's value</param>
@@ -40,16 +40,16 @@
         }
 
         /// <summary>
-        /// Gets the correspond node by the given data.
+        /// Gets the corresponded node by the given data.
         /// </summary>
         /// <param name="data">the searched node's data</param>
-        public TreeNode<K, V> Get(K data)
+        private TreeNode<K, V> GetNode(K data)
         {
             if (Root == null)
                 return null;
-            return Get(data, Root);
+            return GetNode(data, Root);
         }
-        private TreeNode<K, V> Get(K data, TreeNode<K, V> root)
+        private TreeNode<K, V> GetNode(K data, TreeNode<K, V> root)
         {
             if (root == null)
                 return null;
@@ -57,15 +57,15 @@
                 return root;
 
             else if (data.CompareTo(root.Data) <= 0)
-                return Get(data, root.Left);
+                return GetNode(data, root.Left);
             else
-                return Get(data, root.Right);
+                return GetNode(data, root.Right);
         }
 
         /// <summary>
-        /// Gets the correspond node's value according to the given data.
+        /// Gets the corresponded node's value according to the given data.
         /// </summary>
-        /// <param name="data">The searched node's value data</param>
+        /// <param name="data">The searched node's value's data</param>
         public V GetValue(K data)
         {
             if (Root == null)
@@ -125,7 +125,7 @@
             }
             else //the deleted node is the root which doesn't have a parent
             {
-                if(deleteNode.Left == null && deleteNode.Right != null) //the root has right child
+                if(deleteNode.Left == null && deleteNode.Right != null) //the root has a right child
                 {
                     var minimum = GetMinimumNode(deleteNode.Right);
                     var minParent = GetParent(minimum.Data);
@@ -171,7 +171,7 @@
                 if (deleteNode.Right != minimum)
                     minimum.Right = deleteNode.Right;
 
-                if (parent is not null)
+                if (parent is not null) // if the removed node is not the root
                 {
                     if (parent.Right == deleteNode)   // connecting the node's parent with the minimum
                         parent.Right = minimum;
@@ -191,7 +191,7 @@
         /// <param name="data">the removed node's data</param>
         public void RemoveNode(K data)
         {
-            var deleteNode = Get(data);
+            var deleteNode = GetNode(data);
             if (deleteNode != null)
             {
                 RemoveNodeWithoutChildren(deleteNode);
@@ -246,32 +246,15 @@
                 return GetParent(data, t.Right);
         }
 
-        /// <summary>
-        /// Traverse through the tree by InOrder.
-        /// </summary>
-        /// <param name="act">the action that would occur on the current node in the process</param>
-        public void TraverseInOrder(Action<string> act)
-        {
-            TraverseInOrder(Root, act);
-        }
-        private void TraverseInOrder(TreeNode<K, V> root, Action<string> act)
-        {
-            if (root != null)
-            {
-                TraverseInOrder(root.Left, act);
-                act($"{root.Data}");
-                TraverseInOrder(root.Right, act);
-            }
-        }
 
         /// <summary>
         /// If the node exists return true, otherwise false.
         /// </summary>
         /// <param name="data">the data of the examinated node</param>
-        public bool IsExist(K data) => Get(data) is not null;
+        public bool IsExist(K data) => GetNode(data) is not null;
 
         /// <summary>
-        /// True if the tree is empty(its root is null), otherwise false.
+        /// True if the tree is empty (its root is null), otherwise false.
         /// </summary>
         public bool IsEmpty() => this.Root is null;
 
@@ -296,15 +279,19 @@
                     yield return node;
         }
 
-        public IEnumerable<TreeNode<K, V>> TraverseInOrderByEnumerator() => Enumerate(Root);
-        private IEnumerable<TreeNode<K, V>> Enumerate(TreeNode<K, V> root)
+        /// <summary>
+        /// Gets all the nodes of the tree.
+        /// </summary>
+        /// <returns>An Enumerable that would be iterated and yields the tree nodes.</returns>
+        public IEnumerable<TreeNode<K, V>> TraverseInOrderByEnumerator() => EnumerateThroughTree(Root);
+        private IEnumerable<TreeNode<K, V>> EnumerateThroughTree(TreeNode<K, V> root)
         {
             if (root == null)
                 yield break;
-            foreach (var v in Enumerate(root.Left))
+            foreach (var v in EnumerateThroughTree(root.Left))
                 yield return v;
             yield return root;
-            foreach (var v in Enumerate(root.Right))
+            foreach (var v in EnumerateThroughTree(root.Right))
                 yield return v;
         }
     }

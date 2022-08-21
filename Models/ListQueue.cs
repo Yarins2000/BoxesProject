@@ -19,22 +19,37 @@ namespace Models
         /// </summary>
         public void Enqueue(T value)
         {
-            if (IsEmpty())
-                _list.AddToStart(value);
-            else
-                _list.AddToEnd(value);
+            _list.AddToEnd(value);
         }
 
         /// <summary>
         /// Removes the first value from the start of the queue.
         /// </summary>
-        public void Dequeue()
+        public T Dequeue()
         {
             if (IsEmpty())
-                return;
+                return default;
+            var deleted = _list.Head.Data;
             _list.RemoveFromStart();
+            return deleted;
         }
 
+        /// <summary>
+        /// Removes the value from the queue.
+        /// </summary>
+        /// <param name="value">the wanted value to remove</param>
+        /// <returns>the removed value</returns>
+        public T Dequeue(T value)
+        {
+            if (IsEmpty())
+                return default;
+            return _list.Remove(value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>True if the list is empty, otherwise false.</returns>
         public bool IsEmpty() => _list.IsEmpty();
 
         public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();

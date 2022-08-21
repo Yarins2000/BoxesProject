@@ -6,12 +6,27 @@ namespace DAL
     /// </summary>
     public class ConfigData
     {
+        /// <summary>
+        /// The maximum allowed quantity of a box in the storage.
+        /// </summary>
         public int MaxQuantity { get; set; }
+        /// <summary>
+        /// The minimum quantity of a box that alerts the user.
+        /// </summary>
         public int MinQuantityToAlert { get; set; }
-
+        /// <summary>
+        /// The percentage of distancing from the wanted amount of boxes.
+        /// </summary>
         public double PercentageRange { get; set; }
+        /// <summary>
+        /// The maximum days that a box can be in the storage without being bought.
+        /// </summary>
+        public int MaxDaysUntilExpiration { get; set; }
     }
 
+    /// <summary>
+    /// A class that convert the configuration file(json) to a <see cref="ConfigData"/> variable.
+    /// </summary>
     public class Configuration
     {
         public static ConfigData Data { get; set; }

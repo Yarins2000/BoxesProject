@@ -2,40 +2,45 @@
 {
     public class Box
     {
+        /// <summary>
+        /// The quantity of the box in the storage.
+        /// </summary>
         public int Quantity { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        /// <summary>
+        /// The updated date of the box.
+        /// </summary>
+        public DateTime UpdatedDate { get; private set; }
 
-        public double Length { get; set; }
-        public double Height { get; set; }
+        /// <summary>
+        /// The length and width of the box.
+        /// </summary>
+        public double Length { get; private set; }
+        /// <summary>
+        /// The height if the box.
+        /// </summary>
+        public double Height { get; private set; }
 
         /// <summary>
         /// Represents the amount of boxes for the gift. After the purchasing, it'd be decreased from the box's quantity.
         /// </summary>
         public int AmountToGive { get; set; } = 0;
 
-        /// <summary>
-        /// Represents the reference for the DateTime Queue.
-        /// </summary>
-        public QNode<DateTime> DateReference { get; set; }
-
-        public Box(double length, double height, int quantity, DateTime releaseDate = default)
+        public Box(double length, double height, int quantity, DateTime date = default)
         {
             Length = length;
             Height = height;
             Quantity = quantity;
-            UpdatedDate = releaseDate == default ? DateTime.Now : releaseDate;
-            DateReference = new QNode<DateTime>(UpdatedDate);
+            UpdatedDate = date == default ? DateTime.Now : date;
         }
 
         public void AddBoxCount(int q) => Quantity += q;
 
-        public void BuyBoxes(int q)
-        {
-            UpdatedDate = DateTime.Now;
-            Quantity -= q;
-        }
-
         public bool IsEmpty() => Quantity is 0;
+
+        /// <summary>
+        /// Updating the box's date to the current date.
+        /// </summary>
+        public void UpdateTheDate() => UpdatedDate = DateTime.Now;
 
         public override string ToString()
         {

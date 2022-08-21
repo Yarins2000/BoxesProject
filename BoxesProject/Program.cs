@@ -38,57 +38,15 @@ namespace BoxesProject
             var tree = DBMock.Instance.Tree;
 
             BoxManager bm = new();
-            bm.Traverse(Console.WriteLine);
+            //bm.ShowAllBoxes(Console.WriteLine);
             //var list = bm.SuitableBoxListByAmount(8, 7, 22, out bool flag);
             //bm.UpdateTreeAfterPurchase(list);
             
             BoxManagerUI bmUI = new();
-            //bmUI.Start();
+            bmUI.Start();
 
             //bmUI.ChooseBoxesForGift();
 
         }
     }
-    /*public void RemoveNode(k key)
-        {
-            RemoveNode(root, key);
-        }
-        private Node<k, v> RemoveNode(Node<k, v> root, k key)
-        {
-            if (root == null)
-                return root;
-            if (root.Key.CompareTo(key) > 0)
-                root.Left = RemoveNode(root.Left, key);
-            else if (root.Key.CompareTo(key) < 0)
-            {
-                root.Right = RemoveNode(root.Right, key);
-            }
-            //we found the node
-            else
-            {
-                //Node has no children
-                if (root.Left == null && root.Right == null)
-                {
-                    //update root to null
-                    root = null;
-                }
-                //node has two children
-                else if (root.Left != null && root.Right != null)
-                {
-                    var maxNode = FindMax(root.Right);
-                    //copy the value
-                    root.Key = maxNode.Key;
-                    root.Value = maxNode.Value;
-                    root.Right = RemoveNode(root.Right, maxNode.Key);
-                }
-                //node has one children
-                else
-                {
-                    var child = root.Left != null ? root.Left : root.Right;
-                    root = child;
-                }
-            }
-            return root;
-        }
-     */
 }

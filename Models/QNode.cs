@@ -1,10 +1,10 @@
 ﻿namespace Models
 {
-    public class QNode<T>
+    internal class QNode<T>
     {
-        public T Data { get; set; }
-        public QNode<T> Next { get; set; }
-        public QNode<T> Previous { get; set; }
+        public T Data { get; private set; }
+        public QNode<T> Next { get; internal set; }
+        public QNode<T> Previous { get; internal set; }
 
         public QNode(T data, QNode<T> next = null, QNode<T> previous = null)
         {

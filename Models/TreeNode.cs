@@ -2,10 +2,10 @@
 {
     public class TreeNode<K, V> where K : IComparable<K>
     {
-        public K Data { get; set; }
-        public V Value { get; set; }
-        public TreeNode<K, V> Left { get; set; }
-        public TreeNode<K, V> Right { get; set; }
+        public K Data { get; private set; }
+        public V Value { get; private set; }
+        public TreeNode<K, V> Left { get; internal set; }
+        public TreeNode<K, V> Right { get; internal set; }
 
         public TreeNode(K data, V value)
         {
