@@ -2,7 +2,10 @@
 using Models;
 namespace BoxesProject
 {
-    internal class BoxManagerUI
+    /// <summary>
+    /// A UI class that binding the manager and the program.
+    /// </summary>
+    public class BoxManagerUI
     {
         readonly BoxManager _bm;
         readonly DBMock _db;
@@ -12,6 +15,10 @@ namespace BoxesProject
             _bm = new();
             _db = DBMock.Instance;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void Start()
         {
             _bm.DeleteExpiredBoxes(Console.WriteLine);
@@ -79,7 +86,7 @@ namespace BoxesProject
             bool isValid = SizeValidation(Console.ReadLine(), out length);
             while (!isValid)
             {
-                Console.WriteLine("ivalid input. Only decimals. Type again");
+                Console.WriteLine("ivalid input. Only positive decimals. Type again");
                 isValid = SizeValidation(Console.ReadLine(), out length);
             }
             Console.WriteLine();
@@ -87,7 +94,7 @@ namespace BoxesProject
             isValid = SizeValidation(Console.ReadLine(), out height);
             while (!isValid)
             {
-                Console.WriteLine("ivalid input. Only decimals. Type again");
+                Console.WriteLine("ivalid input. Only positive decimals. Type again");
                 isValid = SizeValidation(Console.ReadLine(), out height);
             }
             Console.WriteLine();
@@ -101,7 +108,7 @@ namespace BoxesProject
             bool isValid = IntValidation(Console.ReadLine(), out int quantity);
             while (!isValid)
             {
-                Console.WriteLine("ivalid input. Only integers. Type again");
+                Console.WriteLine("ivalid input. Only positive integers. Type again");
                 isValid = IntValidation(Console.ReadLine(), out quantity);
             }
 
@@ -130,7 +137,7 @@ namespace BoxesProject
             bool isValid = IntValidation(Console.ReadLine(), out int days);
             while (!isValid)
             {
-                Console.WriteLine("ivalid input. Only integeers. Type again");
+                Console.WriteLine("ivalid input. Only positive integers. Type again");
                 isValid = IntValidation(Console.ReadLine(), out days);
             }
             foreach (var box in _db.BoxesDates)
@@ -155,7 +162,7 @@ namespace BoxesProject
             bool isValid = IntValidation(Console.ReadLine(), out int amount);
             while (!isValid)
             {
-                Console.WriteLine("ivalid input. Only integers. Type again");
+                Console.WriteLine("ivalid input. Only positive integers. Type again");
                 isValid = IntValidation(Console.ReadLine(), out amount);
             }
 
@@ -199,11 +206,11 @@ namespace BoxesProject
 
         public bool SizeValidation(string inputSize, out double size)
         {
-            return double.TryParse(inputSize, out size);
+            return double.TryParse(inputSize, out size) && size > 0;
         }
         public bool IntValidation(string inputInt, out int amount)
         {
-            return int.TryParse(inputInt, out amount);
+            return int.TryParse(inputInt, out amount) && amount > 0;
         }
     }
 }

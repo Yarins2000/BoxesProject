@@ -27,34 +27,34 @@ namespace DAL
         /// <summary>
         /// Adds a new box to the tree.
         /// </summary>
-        /// <param name="box">The new added box</param>
-        public void AddNewBox(Box box)
+        /// <param name="newBox">The new added box</param>
+        public void AddNewBox(Box newBox)
         {
-            if (box is null || box.Quantity < 0) return;
+            if (newBox is null || newBox.Quantity < 0) return;
 
-            if (_storage.IsExist(box.Length))
+            if (_storage.IsExist(newBox.Length))
             {
-                var innerTree = _storage.GetValue(box.Length);
-                if (innerTree.IsExist(box.Height))
+                var innerTree = _storage.GetValue(newBox.Length);
+                if (innerTree.IsExist(newBox.Height))
                 {
-                    var currentBox = innerTree.GetValue(box.Height);
-                    currentBox.AddBoxCount(box.Quantity);
+                    var currentBox = innerTree.GetValue(newBox.Height);
+                    currentBox.AddBoxCount(newBox.Quantity);
                     currentBox.Quantity = currentBox.Quantity > _maxQuantity ? _maxQuantity : currentBox.Quantity;
                 }
                 else
                 {
-                    box.UpdateTheDate();
-                    innerTree.AddNode(box.Height, box);
-                    _boxesQueue.Enqueue(box);
+                    newBox.UpdateTheDate();
+                    innerTree.AddNode(newBox.Height, newBox);
+                    _boxesQueue.Enqueue(newBox);
                 }
             }
             else
             {
                 var newInnerTree = new BinarySearchTree<double, Box>();
-                box.Quantity = box.Quantity > _maxQuantity ? _maxQuantity : box.Quantity;
-                newInnerTree.AddNode(box.Height, box);
-                _storage.AddNode(box.Length, newInnerTree);
-                _boxesQueue.Enqueue(box);
+                newBox.Quantity = newBox.Quantity > _maxQuantity ? _maxQuantity : newBox.Quantity;
+                newInnerTree.AddNode(newBox.Height, newBox);
+                _storage.AddNode(newBox.Length, newInnerTree);
+                _boxesQueue.Enqueue(newBox);
             }
         }
         public void AddNewBoxes(params Box[] boxes)

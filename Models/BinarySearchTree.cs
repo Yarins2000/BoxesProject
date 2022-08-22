@@ -135,7 +135,8 @@
                         if (minimum.Right != null)
                             minParent.Left = minimum.Right;
                     }
-                    minimum.Right = deleteNode.Right;
+                    if(deleteNode.Right != minimum)
+                        minimum.Right = deleteNode.Right;
                     this.Root = minimum;
                 }
                 else if(deleteNode.Left != null && deleteNode.Right == null)
@@ -148,7 +149,8 @@
                         if(maximum.Left != null)
                             maxParent.Right = maximum.Left;
                     }
-                    maximum.Left = deleteNode.Left;
+                    if(deleteNode.Left != maximum)
+                        maximum.Left = deleteNode.Left;
                     this.Root = maximum;
                 }
             }

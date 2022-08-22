@@ -5,19 +5,17 @@ namespace DAL
 {
     public class DBMock
     {
-        private static DBMock _instance;
+        private static DBMock? _instance;
         public static DBMock Instance
         {
             get
             {
-                if (_instance == null)
+                if (_instance is null)
                     _instance = new DBMock();
                 return _instance;
             }
         }
-        //change to internal later!!!
         public BinarySearchTree<double, BinarySearchTree<double, Box>> Tree { get; init; }
-        //public ListQueue<QNode<DateTime>> BoxesDates { get; init; }
         public ListQueue<Box> BoxesDates { get; init; }
         private DBMock()
         {
@@ -49,31 +47,30 @@ namespace DAL
 
             AddNewBoxes(b1, b1_1, b1_2, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b11_1, b12, b12_1, b12_2, b13);
         }
-        //check later
-        public void AddNewBox(Box b)
+        public void AddNewBox(Box newBox) //=========================
         {
-            if (b is null || b.Quantity < 0) return;
+            if (newBox is null || newBox.Quantity < 0) return;
 
-            if (Tree.IsExist(b.Length))
+            if (Tree.IsExist(newBox.Length))
             {
-                var innerTree = Tree.GetValue(b.Length);
-                if (innerTree.IsExist(b.Height))
+                var innerTree = Tree.GetValue(newBox.Length);
+                if (innerTree.IsExist(newBox.Height))
                 {
-                    var currentBox = innerTree.GetValue(b.Height);
-                    currentBox.AddBoxCount(b.Quantity);
+                    var currentBox = innerTree.GetValue(newBox.Height);
+                    currentBox.AddBoxCount(newBox.Quantity);
                 }
                 else
                 {
-                    innerTree.AddNode(b.Height, b);
-                    BoxesDates.Enqueue(b);
+                    innerTree.AddNode(newBox.Height, newBox);
+                    BoxesDates.Enqueue(newBox);
                 }
             }
             else
             {
                 var newInnerTree = new BinarySearchTree<double, Box>();
-                newInnerTree.AddNode(b.Height, b);
-                Tree.AddNode(b.Length, newInnerTree);
-                BoxesDates.Enqueue(b);
+                newInnerTree.AddNode(newBox.Height, newBox);
+                Tree.AddNode(newBox.Length, newInnerTree);
+                BoxesDates.Enqueue(newBox);
             }
         }
         public void AddNewBoxes(params Box[] boxes)

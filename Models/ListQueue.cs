@@ -21,6 +21,14 @@ namespace Models
         {
             _list.AddToEnd(value);
         }
+        //=====================
+        public QNode<T> Enqueues(T value)
+        {
+            var qnode = new QNode<T>(value);
+            _list.AddToEnd(value);
+            return qnode;
+        }
+        //=====================
 
         /// <summary>
         /// Removes the first value from the start of the queue.

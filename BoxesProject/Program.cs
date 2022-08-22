@@ -38,6 +38,7 @@ namespace BoxesProject
             var tree = DBMock.Instance.Tree;
 
             BoxManager bm = new();
+            Console.WriteLine();
             //bm.ShowAllBoxes(Console.WriteLine);
             //var list = bm.SuitableBoxListByAmount(8, 7, 22, out bool flag);
             //bm.UpdateTreeAfterPurchase(list);

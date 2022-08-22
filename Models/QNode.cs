@@ -1,6 +1,6 @@
 ﻿namespace Models
 {
-    internal class QNode<T>
+    public class QNode<T>
     {
         public T Data { get; private set; }
         public QNode<T> Next { get; internal set; }
