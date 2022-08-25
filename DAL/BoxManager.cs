@@ -2,6 +2,9 @@
 
 namespace DAL
 {
+    /// <summary>
+    /// Represents a class that manages the storage.
+    /// </summary>
     public class BoxManager
     {
         /// <summary>
@@ -38,7 +41,7 @@ namespace DAL
                 if (innerTree.IsExist(newBox.Height))
                 {
                     var currentBox = innerTree.GetValue(newBox.Height);
-                    currentBox.AddBoxCount(newBox.Quantity);
+                    currentBox.AddBoxQuantity(newBox.Quantity);
                     currentBox.Quantity = currentBox.Quantity > _maxQuantity ? _maxQuantity : currentBox.Quantity;
                 }
                 else

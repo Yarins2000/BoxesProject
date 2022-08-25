@@ -33,7 +33,10 @@
             UpdatedDate = date == default ? DateTime.Now : date;
         }
 
-        public void AddBoxCount(int q) => Quantity += q;
+        /// <summary>
+        /// Adds amount to the box. 
+        /// </summary>
+        public void AddBoxQuantity(int q) => Quantity += q;
 
         public bool IsEmpty() => Quantity is 0;
 

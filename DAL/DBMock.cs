@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace DAL
 {
+    /// <summary>
+    /// Represents a class that contains the data
+    /// </summary>
     public class DBMock
     {
         private static DBMock? _instance;
@@ -17,6 +20,7 @@ namespace DAL
         }
         public BinarySearchTree<double, BinarySearchTree<double, Box>> Tree { get; init; }
         public ListQueue<Box> BoxesDates { get; init; }
+
         private DBMock()
         {
             Tree = new();
@@ -47,7 +51,7 @@ namespace DAL
 
             AddNewBoxes(b1, b1_1, b1_2, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b11_1, b12, b12_1, b12_2, b13);
         }
-        public void AddNewBox(Box newBox) //=========================
+        public void AddNewBox(Box newBox)
         {
             if (newBox is null || newBox.Quantity < 0) return;
 
@@ -57,7 +61,7 @@ namespace DAL
                 if (innerTree.IsExist(newBox.Height))
                 {
                     var currentBox = innerTree.GetValue(newBox.Height);
-                    currentBox.AddBoxCount(newBox.Quantity);
+                    currentBox.AddBoxQuantity(newBox.Quantity);
                 }
                 else
                 {

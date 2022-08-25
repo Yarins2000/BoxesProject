@@ -2,5 +2,5 @@
   "maxQuantity": 50,
   "minQuantityToAlert": 3,
   "PercentageRange": 30,
-  "maxDaysUntilExpiration": 100
+  "maxDaysUntilExpiration": 50
 }

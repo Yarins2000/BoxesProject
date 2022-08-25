@@ -267,17 +267,17 @@
         /// <param name="maxData">the maximum required data of the nodes</param>
         /// <returns>An enumerable that would be iterated and returns the suitable nodes.</returns>
         public IEnumerable<TreeNode<K, V>> GetSuitableNodesByRange(K minData, K maxData) => GetSuitableNodesByRange(minData, maxData, Root);
-        private IEnumerable<TreeNode<K, V>> GetSuitableNodesByRange(K minData, K maxData, TreeNode<K, V> root)
+        private IEnumerable<TreeNode<K, V>> GetSuitableNodesByRange(K minData, K maxData, TreeNode<K, V> treeNode)
         {
-            if (root is null)
+            if (treeNode is null)
                 yield break;
-            if (minData.CompareTo(root.Data) < 0)
-                foreach (TreeNode<K, V> node in GetSuitableNodesByRange(minData, maxData, root.Left))
+            if (minData.CompareTo(treeNode.Data) < 0)
+                foreach (TreeNode<K, V> node in GetSuitableNodesByRange(minData, maxData, treeNode.Left))
                     yield return node;
-            if (minData.CompareTo(root.Data) <= 0 && maxData.CompareTo(root.Data) >= 0)
-                yield return root;
-            if (maxData.CompareTo(root.Data) > 0)
-                foreach (TreeNode<K, V> node in GetSuitableNodesByRange(minData, maxData, root.Right))
+            if (minData.CompareTo(treeNode.Data) <= 0 && maxData.CompareTo(treeNode.Data) >= 0)
+                yield return treeNode;
+            if (maxData.CompareTo(treeNode.Data) > 0)
+                foreach (TreeNode<K, V> node in GetSuitableNodesByRange(minData, maxData, treeNode.Right))
                     yield return node;
         }
 
@@ -286,14 +286,14 @@
         /// </summary>
         /// <returns>An Enumerable that would be iterated and yields the tree nodes.</returns>
         public IEnumerable<TreeNode<K, V>> TraverseInOrderByEnumerator() => EnumerateThroughTree(Root);
-        private IEnumerable<TreeNode<K, V>> EnumerateThroughTree(TreeNode<K, V> root)
+        private IEnumerable<TreeNode<K, V>> EnumerateThroughTree(TreeNode<K, V> node)
         {
-            if (root == null)
+            if (node == null)
                 yield break;
-            foreach (var v in EnumerateThroughTree(root.Left))
+            foreach (var v in EnumerateThroughTree(node.Left))
                 yield return v;
-            yield return root;
-            foreach (var v in EnumerateThroughTree(root.Right))
+            yield return node;
+            foreach (var v in EnumerateThroughTree(node.Right))
                 yield return v;
         }
     }

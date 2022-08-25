@@ -3,7 +3,7 @@ using Models;
 namespace BoxesProject
 {
     /// <summary>
-    /// A UI class that binding the manager and the program.
+    /// A UI class that binding the manager and the program classes.
     /// </summary>
     public class BoxManagerUI
     {
@@ -17,14 +17,14 @@ namespace BoxesProject
         }
 
         /// <summary>
-        /// 
+        /// Starts the 'conversation' between the user and the system.
         /// </summary>
         public void Start()
         {
             _bm.DeleteExpiredBoxes(Console.WriteLine);
             while (true)
             {
-                Console.WriteLine("Hello and welcome to the box's storage management." +
+                Console.WriteLine("Hello and welcome to the box's storage management. " +
                     "Are you a worker or a purchaser? Please type 1 for worker or 2 for purchaser");
                 bool isValid = IntValidation(Console.ReadLine(), out int choose);
                 while(!isValid || (choose is not 1 && choose is not 2))
@@ -70,9 +70,9 @@ namespace BoxesProject
                     ChooseBoxesForGift();
                 }
 
-                Console.WriteLine("Would you want to do somthing else? yes/no (or any other key)");
+                Console.WriteLine("Would you want to do somthing else? Y/N(or any other key)");
                 string ans = Console.ReadLine();
-                if (ans is not "yes")
+                if (ans.ToLower() is not "y")
                     break;
             }
             Console.ForegroundColor = ConsoleColor.Red;
@@ -80,6 +80,11 @@ namespace BoxesProject
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
+        /// <summary>
+        /// Gets the information from the user and validates it.
+        /// </summary>
+        /// <param name="length">length of the box</param>
+        /// <param name="height">height of the box</param>
         public void GetBoxInputFromUser(out double length, out double height)
         {
             Console.Write("Length: ");
@@ -121,6 +126,9 @@ namespace BoxesProject
             _bm.ShowAllBoxes(Console.WriteLine);
         }
 
+        /// <summary>
+        /// Display a certain box by the values received from the user.
+        /// </summary>
         public void DisplayCertainBox()
         {
             GetBoxInputFromUser(out double length, out double height);
@@ -131,6 +139,9 @@ namespace BoxesProject
                 Console.WriteLine(suitsBoxes);
         }
 
+        /// <summary>
+        /// Display boxes that an amount of time has been passed from their dates.
+        /// </summary>
         public void DisplayBoxesByPeriodOfTime()
         {
             Console.WriteLine("Please type the amount of days that have been passed since the boxes were bought: ");
@@ -194,14 +205,20 @@ namespace BoxesProject
                 _bm.UpdateStorageAfterPurchase(suitableBoxesListByAmount);
                 foreach (var box in suitableBoxesListByAmount)
                 {
-                    if(_bm.IsBoxQuantityAlmostEmpty(box))
+                    if (_bm.IsBoxQuantityAlmostEmpty(box))
                         Console.WriteLine($"Pay attention that box {box.Length}X{box.Height} is almost out of stock, only {box.Quantity} is/are left.");
-                    if(box.IsEmpty())
+                    if (box.IsEmpty())
                         Console.WriteLine($"Pay attention that box {box.Length}X{box.Height} is out of stock.");
                 }
             }
             else
-                Console.WriteLine("Alright then, Bye");
+            {
+                Console.WriteLine("OK");
+                foreach (var box in suitableBoxesListByAmount)
+                {
+                    box.AmountToGive = 0;
+                }
+            }
         }
 
         public bool SizeValidation(string inputSize, out double size)
